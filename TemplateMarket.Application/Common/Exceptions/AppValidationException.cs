@@ -1,0 +1,12 @@
+﻿namespace TemplateMarket.Application.Common.Exceptions;
+
+public class AppValidationException : Exception
+{
+    public IDictionary<string, string[]> Errors { get; }
+
+    public AppValidationException(IDictionary<string, string[]> errors)
+        : base("One or more validation failures have occurred.")
+    {
+        Errors = errors;
+    }
+}
