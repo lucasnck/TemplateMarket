@@ -1,0 +1,14 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TemplateMarket.Domain.Entities;
+
+namespace TemplateMarket.Infrastructure.Persistence.Configurations
+{
+    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    {
+        public void Configure(EntityTypeBuilder<Category> builder)
+        {
+            builder.HasKey(c => c.Id);
+        }
+    }
+}

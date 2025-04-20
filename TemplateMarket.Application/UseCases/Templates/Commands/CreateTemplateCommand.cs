@@ -5,14 +5,14 @@ using TemplateMarket.Application.UseCases.Templates.Dtos;
 
 namespace TemplateMarket.Application.UseCases.Templates.Commands;
 
-public class CreateTemplateCommand : IRequest<Guid>
+public class CreateTemplateCommand : IRequest<long>
 {
     public CreateTemplateDto CreateTemplateDto { get; set; }
 }
 
-public class CreateTemplateCommandHandler(IRepository<Template> _repository) : IRequestHandler<CreateTemplateCommand, Guid>
+public class CreateTemplateCommandHandler(IRepository<Template> _repository) : IRequestHandler<CreateTemplateCommand, long>
 {
-    public async Task<Guid> Handle(CreateTemplateCommand request, CancellationToken cancellationToken)
+    public async Task<long> Handle(CreateTemplateCommand request, CancellationToken cancellationToken)
     {
         var alreadyExists = (await _repository.FindAsync(t => t.Name == request.CreateTemplateDto.Name)).Any();
         if (alreadyExists)

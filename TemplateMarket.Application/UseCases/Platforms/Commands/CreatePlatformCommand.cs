@@ -6,15 +6,15 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Platforms.Commands;
 
-public class CreatePlatformCommand : IRequest<Guid>
+public class CreatePlatformCommand : IRequest<long>
 {
     public CreatePlatformDto PlatformDto { get; set; }
 }
 
 public class CreatePlatformCommandHandler(IRepository<Platform> _repository)
-    : IRequestHandler<CreatePlatformCommand, Guid>
+    : IRequestHandler<CreatePlatformCommand, long>
 {
-    public async Task<Guid> Handle(CreatePlatformCommand request, CancellationToken cancellationToken)
+    public async Task<long> Handle(CreatePlatformCommand request, CancellationToken cancellationToken)
     {
         var exists = (await _repository.FindAsync(p => p.Name == request.PlatformDto.Name)).Any();
         if (exists)

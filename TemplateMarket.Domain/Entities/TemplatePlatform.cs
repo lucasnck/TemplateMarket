@@ -1,10 +1,10 @@
 ﻿namespace TemplateMarket.Domain.Entities;
 
-public class TemplatePlatform
+public class TemplatePlatform : BaseEntity
 {
-    public Guid TemplateId { get; set; }
+    public long TemplateId { get; set; }
     public Template Template { get; set; } = default!;
 
-    public Guid PlatformId { get; set; }
+    public long PlatformId { get; set; }
     public Platform Platform { get; set; } = default!;
 }
