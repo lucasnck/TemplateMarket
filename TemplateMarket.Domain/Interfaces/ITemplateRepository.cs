@@ -4,9 +4,9 @@ namespace TemplateMarket.Domain.Interfaces;
 
 public interface ITemplateRepository
 {
-    Task<Template?> GetByIdAsync(Guid id);
+    Task<Template?> GetByIdAsync(long id);
     Task<IEnumerable<Template>> GetAllAsync();
     Task AddAsync(Template template);
     Task UpdateAsync(Template template);
-    Task DeleteAsync(Guid id);
+    Task DeleteAsync(long id);
 }

@@ -7,5 +7,5 @@ public class UpdateTemplateDto
     public string? Description { get; set; }
     public decimal? Price { get; set; }
 
-    public List<Guid> PlatformIds { get; set; } = new();
+    public List<long> PlatformIds { get; set; } = new();
 }

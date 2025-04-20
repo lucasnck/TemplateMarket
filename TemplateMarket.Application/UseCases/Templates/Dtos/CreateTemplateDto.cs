@@ -9,5 +9,5 @@ public class CreateTemplateDto
     public string ThumbnailUrl { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
 
-    public List<Guid> PlatformIds { get; set; } = new();
+    public List<long> PlatformIds { get; set; } = new();
 }
