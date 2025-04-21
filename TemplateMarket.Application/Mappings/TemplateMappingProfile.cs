@@ -21,7 +21,9 @@ public class TemplateMappingProfile : Profile
 
         CreateMap<CreateTemplateDto, Template>()
            .ForMember(dest => dest.TemplatePlatforms,
-                opt => opt.MapFrom(src => src.PlatformIds.Select(id => new TemplatePlatform { PlatformId = id })));
+                opt => opt.MapFrom(src => src.PlatformIds.Select(id => new TemplatePlatform { PlatformId = id })))
+           .ForMember(dest => dest.TemplateCategories,
+                opt => opt.MapFrom(src => src.CategoryIds.Select(id => new TemplateCategory { CategoryId = id })));
 
         CreateMap<CreateTemplateDto, Template>().ReverseMap();
 
@@ -31,13 +33,12 @@ public class TemplateMappingProfile : Profile
             .ForMember(dest => dest.UpdatedDate, o => o.Ignore())
 
             .ForNullableDecimal(d => d.Price)
+            .ForNullableBool(d => d.IsActive)
 
-            // aplica regra para todos os outros campos nullable
             .ForAllMembers(opt =>
                 opt.Condition((src, dest, srcMember) => srcMember != null)
             );
 
-        // inclui o mapeamento do Command → Entidade (herda do DTO)
         CreateMap<UpdateTemplateCommand, Template>()
             .IncludeBase<UpdateTemplateDto, Template>();
     }

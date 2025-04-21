@@ -1,3 +1,5 @@
+using TemplateMarket.Domain.Common.Entities;
+
 namespace TemplateMarket.Domain.Entities;
 
 public class TemplateCategory : BaseEntity

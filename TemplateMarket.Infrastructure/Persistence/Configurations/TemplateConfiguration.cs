@@ -9,5 +9,8 @@ public class TemplateConfiguration : IEntityTypeConfiguration<Template>
     public void Configure(EntityTypeBuilder<Template> builder)
     {
         builder.HasKey(t => t.Id);
+        builder.Property(t => t.Name).IsRequired();
+
+        builder.HasQueryFilter(t => t.IsActive);
     }
 }

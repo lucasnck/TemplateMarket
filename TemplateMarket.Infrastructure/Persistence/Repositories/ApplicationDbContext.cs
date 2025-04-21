@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using TemplateMarket.Domain.Common.Entities;
+using TemplateMarket.Domain.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Infrastructure.Persistence.Configurations;
 
@@ -32,6 +35,18 @@ public class ApplicationDbContext : DbContext
 
         // Aplica todas as configurações de entidades de forma automática
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(IActivable).IsAssignableFrom(entityType.ClrType))
+            {
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(IActivable.IsActive));
+                var filter = Expression.Lambda(Expression.Equal(property, Expression.Constant(true)), parameter);
+
+                entityType.SetQueryFilter(filter);
+            }
+        }
     }
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -1,4 +1,4 @@
-﻿namespace TemplateMarket.Domain.Entities
+﻿namespace TemplateMarket.Domain.Common.Entities
 {
     public abstract class BaseEntity
     {

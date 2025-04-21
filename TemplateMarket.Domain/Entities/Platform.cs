@@ -1,6 +1,9 @@
-﻿namespace TemplateMarket.Domain.Entities;
+﻿using TemplateMarket.Domain.Common.Entities;
+using TemplateMarket.Domain.Common.Interfaces;
 
-public class Platform : BaseEntity
+namespace TemplateMarket.Domain.Entities;
+
+public class Platform : BaseEntity, IActivable
 {
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;

@@ -1,4 +1,6 @@
-﻿namespace TemplateMarket.Domain.Entities;
+﻿using TemplateMarket.Domain.Common.Entities;
+
+namespace TemplateMarket.Domain.Entities;
 
 public class TemplatePlatform : BaseEntity
 {

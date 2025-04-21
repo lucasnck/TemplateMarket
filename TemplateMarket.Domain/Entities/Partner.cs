@@ -1,6 +1,9 @@
+using TemplateMarket.Domain.Common.Entities;
+using TemplateMarket.Domain.Common.Interfaces;
+
 namespace TemplateMarket.Domain.Entities;
 
-public class Partner : BaseEntity
+public class Partner : BaseEntity, IActivable
 {
     public string Name { get; set; } = default!;
     public string Email { get; set; } = default!;
