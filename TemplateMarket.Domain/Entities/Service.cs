@@ -7,5 +7,5 @@ public class Service : BaseEntity
     public decimal Price { get; set; }
     public bool IsActive { get; set; } = true;
 
-    public ICollection<ServiceCategory> ServiceCategories { get; set; } = new List<ServiceCategory>();
+    public virtual ICollection<ServiceCategory> ServiceCategories { get; set; } = new List<ServiceCategory>();
 }

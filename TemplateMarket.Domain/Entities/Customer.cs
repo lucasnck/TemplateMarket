@@ -6,5 +6,5 @@ public class Customer
     public string Name { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string? Phone { get; set; }
-    public ICollection<Order> Orders { get; set; } = new List<Order>();
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

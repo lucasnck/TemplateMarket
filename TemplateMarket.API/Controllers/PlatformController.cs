@@ -32,14 +32,14 @@ public class PlatformController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(long id)
     {
         var result = await _mediator.Send(new GetPlatformByIdQuery { Id = id });
         return Ok(result);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(long id)
     {
         var result = await _mediator.Send(new DeletePlatformCommand(id));
         return Ok(result);

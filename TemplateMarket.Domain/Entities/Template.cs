@@ -7,7 +7,8 @@
         public decimal Price { get; set; }
         public string PreviewUrl { get; set; } = default!;
         public string ThumbnailUrl { get; set; } = default!;
-        public ICollection<TemplatePlatform> TemplatePlatforms { get; set; } = new List<TemplatePlatform>();
-        public ICollection<TemplateCategory> TemplateCategories { get; set; } = new List<TemplateCategory>();
+
+        public virtual ICollection<TemplatePlatform> TemplatePlatforms { get; set; } = new List<TemplatePlatform>();
+        public virtual ICollection<TemplateCategory> TemplateCategories { get; set; } = new List<TemplateCategory>();
     }
 }

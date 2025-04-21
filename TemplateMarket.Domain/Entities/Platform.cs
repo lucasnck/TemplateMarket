@@ -7,5 +7,5 @@ public class Platform : BaseEntity
     public string LogoUrl { get; set; } = default!;
     public bool IsActive { get; set; } = true;
 
-    public ICollection<TemplatePlatform> TemplatePlatforms { get; set; } = new List<TemplatePlatform>();
+    public virtual ICollection<TemplatePlatform> TemplatePlatforms { get; set; } = new List<TemplatePlatform>();
 }

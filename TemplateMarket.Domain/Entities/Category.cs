@@ -6,6 +6,6 @@ public class Category : BaseEntity
     public string Description { get; set; } = default!;
     public bool IsActive { get; set; } = true;
 
-    public ICollection<TemplateCategory> TemplateCategories { get; set; } = new List<TemplateCategory>();
-    public ICollection<ServiceCategory> ServiceCategories { get; set; } = new List<ServiceCategory>();
+    public virtual ICollection<TemplateCategory> TemplateCategories { get; set; } = new List<TemplateCategory>();
+    public virtual ICollection<ServiceCategory> ServiceCategories { get; set; } = new List<ServiceCategory>();
 }

@@ -31,7 +31,9 @@ builder.Services.AddControllers(options =>
 builder.Services.AddMediatR(typeof(CreateTemplateCommandHandler).Assembly);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options
+      .UseLazyLoadingProxies()                                   // habilita proxy
+      .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 builder.Services.AddValidatorsFromAssembly(typeof(CreateTemplateCommandValidator).Assembly);
