@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Templates.Commands;
 
-public record DeletePlatformCommand(long Id) : IRequest<Unit>;  // IRequest sem tipo de resposta
+public record DeletePlatformCommand(long Id) : IRequest<Unit>;
 
 public class DeletePlatformCommandHandler(
     IRepository<Platform> _repository
@@ -13,10 +13,7 @@ public class DeletePlatformCommandHandler(
 {
     public async Task<Unit> Handle(DeletePlatformCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetByIdAsync(request.Id);
-
-        if (entity is null)
-            throw new NotFoundException(nameof(Platform), request.Id);
+        var entity = await _repository.GetOrThrow(request.Id);
 
         await _repository.DeleteAsync(entity);
         await _repository.SaveChangesAsync(); // se estiver usando Unit of Work

@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TemplateMarket.Application.Common.Interfaces;
+using TemplateMarket.Domain.Common.Entities;
 
 namespace TemplateMarket.Infrastructure.Persistence.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T> : IRepository<T> where T : BaseEntity
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<T> _dbSet;
@@ -20,7 +21,11 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().AsNoTracking().ToListAsync();
 
-    public async Task<T?> GetByIdAsync(long id) => await _dbSet.FindAsync(id);
+    public async Task<T?> GetByIdAsync(long id) =>
+    await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+
+    public async Task<T?> GetByIdWithoutFilterAsync(long id) =>
+        await _dbSet.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate) =>
         await _dbSet.Where(predicate).ToListAsync();

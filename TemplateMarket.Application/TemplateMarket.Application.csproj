@@ -22,7 +22,6 @@
     <Folder Include="Common\Models\" />
     <Folder Include="Common\Services\" />
     <Folder Include="Services\" />
-    <Folder Include="UseCases\Platforms\Validators\" />
   </ItemGroup>
 
 </Project>

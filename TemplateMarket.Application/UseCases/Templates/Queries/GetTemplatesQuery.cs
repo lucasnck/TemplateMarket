@@ -17,8 +17,7 @@ public class GetTemplatesQueryHandler(
 {
     public async Task<IEnumerable<TemplateResponse>> Handle(GetTemplatesQuery request, CancellationToken cancellationToken)
     {
-        var templates = await _repository.GetAllAsync();
-        var result = _mapper.Map<IEnumerable<TemplateResponse>>(templates);
-        return result;
+        var result = await _repository.GetAllAsync();
+        return _mapper.Map<IEnumerable<TemplateResponse>>(result);
     }
 }

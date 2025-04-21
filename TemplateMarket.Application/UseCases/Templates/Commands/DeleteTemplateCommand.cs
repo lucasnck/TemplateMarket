@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 
@@ -13,10 +14,7 @@ public class DeleteTemplateCommandHandler(
 {
     public async Task<Unit> Handle(DeleteTemplateCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetByIdAsync(request.Id);
-
-        if (entity is null)
-            throw new NotFoundException(nameof(Template), request.Id);
+        var entity = await _repository.GetOrThrow(request.Id);
 
         await _repository.DeleteAsync(entity);
         await _repository.SaveChangesAsync();

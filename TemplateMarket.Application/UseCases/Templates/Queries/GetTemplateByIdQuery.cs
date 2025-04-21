@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Responses;

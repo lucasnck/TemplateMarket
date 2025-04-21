@@ -25,8 +25,6 @@ public class TemplateMappingProfile : Profile
            .ForMember(dest => dest.TemplateCategories,
                 opt => opt.MapFrom(src => src.CategoryIds.Select(id => new TemplateCategory { CategoryId = id })));
 
-        CreateMap<CreateTemplateDto, Template>().ReverseMap();
-
         CreateMap<UpdateTemplateDto, Template>()
             .ForMember(dest => dest.Id, o => o.Ignore())
             .ForMember(dest => dest.CreatedDate, o => o.Ignore())

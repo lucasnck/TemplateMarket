@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Responses;
@@ -9,21 +8,20 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Platforms.Commands;
 
-public class UpdatePlatformCommand : IRequest<PlatformResponse>
+public class UpdatePlatformCommand : UpdatePlatformDto, IRequest<PlatformResponse>
 {
-    public UpdatePlatformDto PlatformDto { get; set; } = default!;
 }
 
-public class UpdatePlatformCommandHandler(IRepository<Platform> _repository, IMapper _mapper)
-    : IRequestHandler<UpdatePlatformCommand, PlatformResponse>
+public class UpdatePlatformCommandHandler(
+    IRepository<Platform> _repository,
+    IMapper _mapper
+) : IRequestHandler<UpdatePlatformCommand, PlatformResponse>
 {
     public async Task<PlatformResponse> Handle(UpdatePlatformCommand request, CancellationToken cancellationToken)
     {
-        var platform = await _repository.GetByIdAsync(request.PlatformDto.Id);
-        if (platform == null)
-            throw new NotFoundException(nameof(Platform), request.PlatformDto.Id);
+        var platform = await _repository.GetOrThrow(request.Id);
 
-        platform.Update(request.PlatformDto);
+        _mapper.Map(request, platform);
 
         await _repository.SaveChangesAsync();
 

@@ -3,8 +3,8 @@
 public class UpdatePlatformDto
 {
     public long Id { get; set; }
-    public string Name { get; set; } = default!;
-    public string Description { get; set; } = default!;
-    public string LogoUrl { get; set; } = default!;
-    public bool IsActive { get; set; }
+    public string? Name { get; set; }
+    public string? Description { get; set; }
+    public string? LogoUrl { get; set; }
+    public bool? IsActive { get; set; }
 }
