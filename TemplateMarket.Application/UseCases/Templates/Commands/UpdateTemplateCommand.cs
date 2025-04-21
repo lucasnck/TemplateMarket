@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Responses;
@@ -9,9 +8,8 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Templates.Commands;
 
-public record UpdateTemplateCommand : IRequest<TemplateResponse>
+public class UpdateTemplateCommand : UpdateTemplateDto, IRequest<TemplateResponse>
 {
-    public UpdateTemplateDto UpdateTemplateDto { get; set; }
 }
 
 public class UpdateTemplateHandler(
@@ -21,14 +19,10 @@ public class UpdateTemplateHandler(
 {
     public async Task<TemplateResponse> Handle(UpdateTemplateCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetByIdAsync(request.UpdateTemplateDto.Id);
+        var entity = await _repository.GetOrThrow(request.Id);
 
-        if (entity is null) 
-            throw new NotFoundException(nameof(Template), request.UpdateTemplateDto.Id);
+        _mapper.Map(request, entity);
 
-        entity.Update(request.UpdateTemplateDto);
-
-        await _repository.UpdateAsync(entity);
         await _repository.SaveChangesAsync();
 
         return _mapper.Map<TemplateResponse>(entity);

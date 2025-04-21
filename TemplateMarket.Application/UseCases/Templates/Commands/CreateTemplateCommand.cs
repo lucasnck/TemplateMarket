@@ -1,35 +1,28 @@
-﻿using MediatR;
-using TemplateMarket.Domain.Entities;
+﻿using AutoMapper;
+using MediatR;
+using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.UseCases.Templates.Dtos;
+using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Templates.Commands;
 
-public class CreateTemplateCommand : IRequest<long>
+public class CreateTemplateCommand : CreateTemplateDto, IRequest<long>
 {
-    public CreateTemplateDto CreateTemplateDto { get; set; }
 }
 
-public class CreateTemplateCommandHandler(IRepository<Template> _repository) : IRequestHandler<CreateTemplateCommand, long>
+public class CreateTemplateCommandHandler(
+    IRepository<Template> _repository, 
+    IMapper _mapper
+) : IRequestHandler<CreateTemplateCommand, long>
 {
     public async Task<long> Handle(CreateTemplateCommand request, CancellationToken cancellationToken)
     {
-        var alreadyExists = (await _repository.FindAsync(t => t.Name == request.CreateTemplateDto.Name)).Any();
+        var alreadyExists = (await _repository.FindAsync(t => t.Name == request.Name)).Any();
         if (alreadyExists)
-            throw new Exception("Template already exists.");
+            throw new AlreadyExistsException(nameof(Template));
 
-        var entity = new Template
-        {
-            Name = request.CreateTemplateDto.Name,
-            Price = request.CreateTemplateDto.Price,
-            PreviewUrl = request.CreateTemplateDto.PreviewUrl,
-            ThumbnailUrl = request.CreateTemplateDto.ThumbnailUrl,
-            Description = request.CreateTemplateDto.Description,
-            TemplatePlatforms = request.CreateTemplateDto.PlatformIds.Select(pid => new TemplatePlatform
-            {
-                PlatformId = pid
-            }).ToList()
-        };
+        var entity = _mapper.Map<Template>(request);
 
         await _repository.AddAsync(entity);
         await _repository.SaveChangesAsync();

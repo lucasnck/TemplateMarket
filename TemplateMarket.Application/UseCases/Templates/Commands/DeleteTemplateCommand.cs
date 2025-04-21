@@ -5,7 +5,7 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Templates.Commands;
 
-public record DeleteTemplateCommand(long Id) : IRequest<Unit>;  // IRequest sem tipo de resposta
+public record DeleteTemplateCommand(long Id) : IRequest<Unit>;
 
 public class DeleteTemplateCommandHandler(
     IRepository<Template> _repository
@@ -19,7 +19,7 @@ public class DeleteTemplateCommandHandler(
             throw new NotFoundException(nameof(Template), request.Id);
 
         await _repository.DeleteAsync(entity);
-        await _repository.SaveChangesAsync(); // se estiver usando Unit of Work
+        await _repository.SaveChangesAsync();
 
         return Unit.Value;
     }

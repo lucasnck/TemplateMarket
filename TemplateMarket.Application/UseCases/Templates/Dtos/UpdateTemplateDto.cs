@@ -8,4 +8,5 @@ public class UpdateTemplateDto
     public decimal? Price { get; set; }
 
     public List<long> PlatformIds { get; set; } = new();
+    public List<long> CtegoryIds { get; set; } = new();
 }

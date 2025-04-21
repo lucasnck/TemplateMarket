@@ -7,10 +7,12 @@ public class CreateTemplateCommandValidator : AbstractValidator<CreateTemplateCo
 {
     public CreateTemplateCommandValidator()
     {
-        RuleFor(x => x.CreateTemplateDto.Name)
+        RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Name is required")
-            .MaximumLength(100)
-            .WithMessage("Name must be at most 100 characters");
+            .WithMessage("Name is required");
+
+        RuleFor(x => x.Description)
+            .NotEmpty()
+            .WithMessage("Description is required");
     }
 }

@@ -8,6 +8,7 @@ public class PlatformMappingProfile : Profile
 {
     public PlatformMappingProfile()
     {
-        CreateMap<Platform, PlatformResponse>().ReverseMap();
+        CreateMap<Platform, PlatformResponse>()
+            .ReverseMap();
     }
 }

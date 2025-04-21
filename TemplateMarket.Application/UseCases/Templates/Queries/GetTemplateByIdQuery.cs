@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Responses;
 using TemplateMarket.Domain.Entities;
@@ -15,11 +16,7 @@ public class GetTemplateByIdQueryHandler(
 {
     public async Task<TemplateResponse> Handle(GetTemplateByIdQuery request, CancellationToken cancellationToken)
     {
-        var template = await _repository.GetByIdAsync(request.Id);
-
-        if (template is null)
-            throw new NotFoundException(nameof(Template), request.Id);
-
-        return _mapper.Map<TemplateResponse>(template);
+        var entity = await _repository.GetOrThrow(request.Id);
+        return _mapper.Map<TemplateResponse>(entity);
     }
 }
