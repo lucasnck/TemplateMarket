@@ -9,7 +9,7 @@ namespace TemplateMarket.Application.UseCases.Platforms.Queries;
 
 public class GetPlatformByIdQuery : IRequest<PlatformResponse>
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
 }
 
 public class GetPlatformByIdQueryHandler(IRepository<Platform> _repository, IMapper _mapper)

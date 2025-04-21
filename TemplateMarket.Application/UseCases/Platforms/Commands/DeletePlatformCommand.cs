@@ -5,7 +5,7 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Templates.Commands;
 
-public record DeletePlatformCommand(Guid Id) : IRequest<Unit>;  // IRequest sem tipo de resposta
+public record DeletePlatformCommand(long Id) : IRequest<Unit>;  // IRequest sem tipo de resposta
 
 public class DeletePlatformCommandHandler(
     IRepository<Platform> _repository
