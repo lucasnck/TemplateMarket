@@ -12,5 +12,5 @@ public class UpdateTemplateDto
     public bool? IsActive { get; set; }
 
     public List<long> PlatformIds { get; set; } = new();
-    public List<long> CtegoryIds { get; set; } = new();
+    public List<long> CategoryIds { get; set; } = new();
 }

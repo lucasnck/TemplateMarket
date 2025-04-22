@@ -27,14 +27,14 @@ public class PlatformController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllPlatformsQuery());
+        var result = await _mediator.Send(new GetPlatformsQuery());
         return Ok(result);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(long id)
     {
-        var result = await _mediator.Send(new GetPlatformByIdQuery { Id = id });
+        var result = await _mediator.Send(new GetPlatformByIdQuery(id));
         return Ok(result);
     }
 

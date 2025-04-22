@@ -6,16 +6,16 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Platforms.Queries;
 
-public class GetAllPlatformsQuery : IRequest<IEnumerable<PlatformResponse>>
+public class GetPlatformsQuery : IRequest<IEnumerable<PlatformResponse>>
 {
 }
 
-public class GetAllPlatformsQueryHandler(
+public class GetPlatformsQueryHandler(
     IRepository<Platform> _repository, 
     IMapper _mapper
-) : IRequestHandler<GetAllPlatformsQuery, IEnumerable<PlatformResponse>>
+) : IRequestHandler<GetPlatformsQuery, IEnumerable<PlatformResponse>>
 {
-    public async Task<IEnumerable<PlatformResponse>> Handle(GetAllPlatformsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<PlatformResponse>> Handle(GetPlatformsQuery request, CancellationToken cancellationToken)
     {
         var result = await _repository.GetAllAsync();
         return _mapper.Map<List<PlatformResponse>>(result);

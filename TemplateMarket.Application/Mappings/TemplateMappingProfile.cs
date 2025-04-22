@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TemplateMarket.Application.Mappings.Extensions;
 using TemplateMarket.Application.Responses;
+using TemplateMarket.Application.UseCases.Category.Dtos;
 using TemplateMarket.Application.UseCases.Templates.Commands;
 using TemplateMarket.Application.UseCases.Templates.Dtos;
 using TemplateMarket.Domain.Entities;
@@ -26,16 +27,13 @@ public class TemplateMappingProfile : Profile
                 opt => opt.MapFrom(src => src.CategoryIds.Select(id => new TemplateCategory { CategoryId = id })));
 
         CreateMap<UpdateTemplateDto, Template>()
-            .ForMember(dest => dest.Id, o => o.Ignore())
-            .ForMember(dest => dest.CreatedDate, o => o.Ignore())
-            .ForMember(dest => dest.UpdatedDate, o => o.Ignore())
-
+           .ForMember(dest => dest.TemplatePlatforms,
+                opt => opt.MapFrom(src => src.PlatformIds.Select(id => new TemplatePlatform { PlatformId = id })))
+           .ForMember(dest => dest.TemplateCategories,
+                opt => opt.MapFrom(src => src.CategoryIds.Select(id => new TemplateCategory { CategoryId = id })))
+            .ApplyBaseUpdateRules<UpdateTemplateDto, Template>()
             .ForNullableDecimal(d => d.Price)
-            .ForNullableBool(d => d.IsActive)
-
-            .ForAllMembers(opt =>
-                opt.Condition((src, dest, srcMember) => srcMember != null)
-            );
+            .ForNullableBool(d => d.IsActive);
 
         CreateMap<UpdateTemplateCommand, Template>()
             .IncludeBase<UpdateTemplateDto, Template>();

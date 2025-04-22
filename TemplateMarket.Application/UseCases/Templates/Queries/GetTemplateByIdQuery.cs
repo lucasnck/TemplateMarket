@@ -6,6 +6,7 @@ using TemplateMarket.Application.Responses;
 using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Templates.Queries;
+
 public record GetTemplateByIdQuery(long Id) : IRequest<TemplateResponse>;
 
 public class GetTemplateByIdQueryHandler(

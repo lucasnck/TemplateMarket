@@ -17,15 +17,7 @@ public class PlatformMappingProfile : Profile
         CreateMap<CreatePlatformDto, Platform>();
 
         CreateMap<UpdatePlatformDto, Platform>()
-            .ForMember(dest => dest.Id, o => o.Ignore())
-            .ForMember(dest => dest.CreatedDate, o => o.Ignore())
-            .ForMember(dest => dest.UpdatedDate, o => o.Ignore())
-
-            .ForNullableBool(d => d.IsActive)
-
-            .ForAllMembers(opt =>
-                opt.Condition((src, dest, srcMember) => srcMember != null)
-            );
+            .ApplyBaseUpdateRules<UpdatePlatformDto, Platform>();
 
         CreateMap<UpdatePlatformCommand, Platform>()
             .IncludeBase<UpdatePlatformDto, Platform>();

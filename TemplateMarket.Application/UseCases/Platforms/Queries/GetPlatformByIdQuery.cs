@@ -8,10 +8,7 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Platforms.Queries;
 
-public class GetPlatformByIdQuery : IRequest<PlatformResponse>
-{
-    public long Id { get; set; }
-}
+public record GetPlatformByIdQuery(long id) : IRequest<PlatformResponse>;
 
 public class GetPlatformByIdQueryHandler(
     IRepository<Platform> _repository, 
@@ -20,7 +17,7 @@ public class GetPlatformByIdQueryHandler(
 {
     public async Task<PlatformResponse> Handle(GetPlatformByIdQuery request, CancellationToken cancellationToken)
     {
-        var platform = await _repository.GetOrThrow(request.Id);
+        var platform = await _repository.GetOrThrow(request.id);
 
         return _mapper.Map<PlatformResponse>(platform);
     }
