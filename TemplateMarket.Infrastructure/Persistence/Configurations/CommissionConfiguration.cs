@@ -13,13 +13,20 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Status)
                 .IsRequired();
 
-            builder.HasOne(c => c.Partner)
-                   .WithMany(p => p.Commissions)
-                   .HasForeignKey(c => c.PartnerId);
+            builder.HasOne(x => x.Partner)
+                .WithMany()
+                .HasForeignKey(x => x.PartnerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(c => c.OrderItem)
-                   .WithOne(oi => oi.Commission)
-                   .HasForeignKey<Commission>(c => c.OrderItemId);
+            builder.HasOne(x => x.OrderItemService)
+                .WithMany()
+                .HasForeignKey(x => x.OrderItemServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.OrderItem)
+                .WithMany()
+                .HasForeignKey(x => x.OrderItemId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

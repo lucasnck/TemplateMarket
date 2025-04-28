@@ -30,6 +30,14 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate) =>
         await _dbSet.Where(predicate).ToListAsync();
 
+    public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
+    {
+        return _context.Set<T>().SingleOrDefaultAsync(predicate);
+    }
+
+    public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+    => _context.Set<T>().AnyAsync(predicate);
+
     public void Remove(T entity) => _dbSet.Remove(entity);
 
     public async Task SaveChangesAsync() => await _context.SaveChangesAsync();

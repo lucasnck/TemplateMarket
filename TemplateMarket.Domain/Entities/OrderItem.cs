@@ -2,17 +2,38 @@ using TemplateMarket.Domain.Common.Entities;
 
 namespace TemplateMarket.Domain.Entities;
 
-public enum ProductType { Template, Service }
-
 public class OrderItem : BaseEntity
 {
     public long OrderId { get; set; }
-    public virtual Order Order { get; set; } = default!;
-    public virtual ProductType Type { get; set; }
-    public long ProductId { get; set; }
-    public string Name { get; set; } = default!;
-    public decimal Price { get; set; }
+    public virtual Order Order { get; set; }
 
-    public virtual Commission? Commission { get; set; }
-    public virtual WorkOrder? WorkOrder { get; set; }
+    public long? TemplateId { get; set; }
+    public virtual Template? Template { get; set; }
+    public long? ServiceId { get; set; }
+    public virtual Service? Service { get; set; }
+
+    public int Quantity { get; set; } = 1;
+    public decimal UnitPrice { get; set; }
+    public decimal TotalPrice => UnitPrice * Quantity;
+
+    public virtual List<OrderItemService> Services { get; private set; } = [];
+
+    private OrderItem() { }
+
+    public OrderItem(long templateId, decimal price)
+    {
+        TemplateId = templateId;
+        UnitPrice = price;
+    }
+
+    public OrderItem(long serviceId, decimal price, bool isAvulso)
+    {
+        ServiceId = serviceId;
+        UnitPrice = price;
+    }
+
+    public void AddService(long serviceId, decimal price)
+    {
+        Services.Add(new OrderItemService(serviceId, price));
+    }
 }

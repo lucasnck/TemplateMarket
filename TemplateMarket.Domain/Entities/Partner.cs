@@ -1,5 +1,6 @@
 using TemplateMarket.Domain.Common.Entities;
 using TemplateMarket.Domain.Common.Interfaces;
+using TemplateMarket.Domain.Enums;
 
 namespace TemplateMarket.Domain.Entities;
 
@@ -7,7 +8,7 @@ public class Partner : BaseEntity, IActivable
 {
     public string Name { get; set; } = default!;
     public string Email { get; set; } = default!;
-    public string Type { get; set; }
+    public PartnerType Type { get; set; }
     public string? PortfolioUrl { get; set; }
     public bool IsActive { get; set; } = true;
 

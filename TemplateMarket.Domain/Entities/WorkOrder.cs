@@ -5,9 +5,10 @@ namespace TemplateMarket.Domain.Entities;
 
 public class WorkOrder : BaseEntity
 {
-    public long OrderItemId { get; set; }
-    public virtual OrderItem OrderItem { get; set; } = default!;
+    public long OrderItemServiceId { get; set; }
+    public virtual OrderItemService OrderItemService { get; set; }
     public long? AssignedToPartnerId { get; set; }
     public virtual Partner? AssignedToPartner { get; set; }
     public string Status { get; set; }
+    public DateTime? FinishedDate { get; private set; }
 }

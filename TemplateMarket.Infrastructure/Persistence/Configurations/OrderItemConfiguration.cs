@@ -10,15 +10,37 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(oi => oi.Id);
 
-            builder.Property(oi => oi.Type)
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.UnitPrice)
+                .HasPrecision(18, 2)
                 .IsRequired();
 
-            builder.Property(oi => oi.Name)
+            builder.Property(x => x.Quantity)
                 .IsRequired();
 
-            builder.HasOne(oi => oi.Order)
-                   .WithMany(o => o.Items)
-                   .HasForeignKey(oi => oi.OrderId);
+            // Relacionamento com Order
+            builder.HasOne(x => x.Order)
+                .WithMany(x => x.OrderItems)
+                .HasForeignKey(x => x.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // TemplateId e ServiceId opcionais (nullable)
+            builder.HasOne<Template>()
+                .WithMany()
+                .HasForeignKey(x => x.TemplateId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<Service>()
+                .WithMany()
+                .HasForeignKey(x => x.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Relacionamento com OrderItemService
+            builder.HasMany(x => x.Services)
+                .WithOne(x => x.OrderItem)
+                .HasForeignKey(x => x.OrderItemId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

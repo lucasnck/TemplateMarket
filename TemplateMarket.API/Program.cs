@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.RateLimiting;
 using TemplateMarket.API.Filters;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Mappings;
@@ -8,6 +9,11 @@ using TemplateMarket.Application.UseCases.Templates.Commands;
 using TemplateMarket.Application.UseCases.Templates.Validators;
 using TemplateMarket.Infrastructure.Persistence;
 using TemplateMarket.Infrastructure.Persistence.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using TemplateMarket.Application.Common.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +26,32 @@ builder.Services.AddControllers(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "TemplateMarket API", Version = "v1" });
+
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Description = "Insira o token JWT no formato: Bearer {seu token}",
+
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+});
 
 builder.Services.AddControllers(options =>
 {
@@ -36,13 +67,54 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
       .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("PublicEndpoints", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 2
+            }));
+});
+
+Console.WriteLine("JWT Issuer: " + builder.Configuration["Jwt:Issuer"]);
+Console.WriteLine("JWT Audience: " + builder.Configuration["Jwt:Audience"]);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Convert.FromBase64String(builder.Configuration["Jwt:Key"]!)
+            )
+        };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddHttpClient(); // para validar o reCAPTCHA
+builder.Services.AddScoped<CaptchaService>();
+
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddValidatorsFromAssembly(typeof(CreateTemplateCommandValidator).Assembly);
 
 builder.Services.AddAutoMapper(typeof(TemplateMappingProfile).Assembly);
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthCommandEnricherBehavior<,>));
 
 var app = builder.Build();
 

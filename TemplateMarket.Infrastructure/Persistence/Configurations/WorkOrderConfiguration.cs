@@ -8,18 +8,16 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkOrder> builder)
         {
-            builder.HasKey(w => w.Id);
+            builder.HasKey(x => x.Id);
 
-            builder.Property(w => w.Status)
+            builder.Property(x => x.Status)
+                .HasConversion<string>()
                 .IsRequired();
 
-            builder.HasOne(w => w.OrderItem)
-                   .WithOne(oi => oi.WorkOrder)
-                   .HasForeignKey<WorkOrder>(w => w.OrderItemId);
-
-            builder.HasOne(w => w.AssignedToPartner)
-                   .WithMany(p => p.WorkOrders)
-                   .HasForeignKey(w => w.AssignedToPartnerId);
+            builder.HasOne(x => x.OrderItemService)
+                .WithOne()
+                .HasForeignKey<WorkOrder>(x => x.OrderItemServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

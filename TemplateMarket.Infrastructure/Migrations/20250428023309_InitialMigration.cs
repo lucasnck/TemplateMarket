@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TemplateMarket.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,6 +21,7 @@ namespace TemplateMarket.Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -30,18 +31,20 @@ namespace TemplateMarket.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "Entities",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Phone = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Identification = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Entities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,26 +85,29 @@ namespace TemplateMarket.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "User",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<string>(type: "text", nullable: false),
+                    ResetToken = table.Column<string>(type: "text", nullable: true),
+                    ResetTokenExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    EntityId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        name: "FK_User_Entities_EntityId",
+                        column: x => x.EntityId,
+                        principalTable: "Entities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,10 +141,12 @@ namespace TemplateMarket.Infrastructure.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Theme = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     PreviewUrl = table.Column<string>(type: "text", nullable: false),
                     ThumbnailUrl = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     PartnerId = table.Column<long>(type: "bigint", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -154,28 +162,31 @@ namespace TemplateMarket.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItems",
+                name: "Companies",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    OrderId = table.Column<long>(type: "bigint", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    EntityId = table.Column<long>(type: "bigint", nullable: false),
+                    OwnerUserId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
+                        name: "FK_Companies_Entities_EntityId",
+                        column: x => x.EntityId,
+                        principalTable: "Entities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Companies_User_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -260,16 +271,128 @@ namespace TemplateMarket.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    EntityId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: true),
+                    CompanyId = table.Column<long>(type: "bigint", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Entities_EntityId",
+                        column: x => x.EntityId,
+                        principalTable: "Entities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OrderId = table.Column<long>(type: "bigint", nullable: false),
+                    TemplateId = table.Column<long>(type: "bigint", nullable: true),
+                    TemplateId1 = table.Column<long>(type: "bigint", nullable: true),
+                    ServiceId = table.Column<long>(type: "bigint", nullable: true),
+                    ServiceId1 = table.Column<long>(type: "bigint", nullable: true),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Services_ServiceId1",
+                        column: x => x.ServiceId1,
+                        principalTable: "Services",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Templates_TemplateId",
+                        column: x => x.TemplateId,
+                        principalTable: "Templates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Templates_TemplateId1",
+                        column: x => x.TemplateId1,
+                        principalTable: "Templates",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Commissions",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PartnerId = table.Column<long>(type: "bigint", nullable: false),
-                    OrderItemId = table.Column<long>(type: "bigint", nullable: false),
-                    Percentage = table.Column<decimal>(type: "numeric", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    OrderItemServiceId = table.Column<long>(type: "bigint", nullable: true),
+                    OrderItemId = table.Column<long>(type: "bigint", nullable: true),
+                    SaleAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    CommissionAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
+                    PartnerId1 = table.Column<long>(type: "bigint", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -281,11 +404,60 @@ namespace TemplateMarket.Infrastructure.Migrations
                         column: x => x.OrderItemId,
                         principalTable: "OrderItems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Commissions_Partners_PartnerId",
                         column: x => x.PartnerId,
                         principalTable: "Partners",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Commissions_Partners_PartnerId1",
+                        column: x => x.PartnerId1,
+                        principalTable: "Partners",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItemServices",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OrderItemId = table.Column<long>(type: "bigint", nullable: false),
+                    ServiceId = table.Column<long>(type: "bigint", nullable: false),
+                    ServiceId1 = table.Column<long>(type: "bigint", nullable: false),
+                    PartnerId = table.Column<long>(type: "bigint", nullable: true),
+                    UnitPrice = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    WorkOrderId = table.Column<long>(type: "bigint", nullable: false),
+                    WorkOrderId2 = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItemServices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItemServices_OrderItems_OrderItemId",
+                        column: x => x.OrderItemId,
+                        principalTable: "OrderItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItemServices_Partners_PartnerId",
+                        column: x => x.PartnerId,
+                        principalTable: "Partners",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OrderItemServices_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderItemServices_Services_ServiceId1",
+                        column: x => x.ServiceId1,
+                        principalTable: "Services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -296,9 +468,10 @@ namespace TemplateMarket.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    OrderItemId = table.Column<long>(type: "bigint", nullable: false),
+                    OrderItemServiceId = table.Column<long>(type: "bigint", nullable: false),
                     AssignedToPartnerId = table.Column<long>(type: "bigint", nullable: true),
                     Status = table.Column<string>(type: "text", nullable: false),
+                    FinishedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -306,11 +479,11 @@ namespace TemplateMarket.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_WorkOrders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WorkOrders_OrderItems_OrderItemId",
-                        column: x => x.OrderItemId,
-                        principalTable: "OrderItems",
+                        name: "FK_WorkOrders_OrderItemServices_OrderItemServiceId",
+                        column: x => x.OrderItemServiceId,
+                        principalTable: "OrderItemServices",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_WorkOrders_Partners_AssignedToPartnerId",
                         column: x => x.AssignedToPartnerId,
@@ -321,8 +494,12 @@ namespace TemplateMarket.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Commissions_OrderItemId",
                 table: "Commissions",
-                column: "OrderItemId",
-                unique: true);
+                column: "OrderItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Commissions_OrderItemServiceId",
+                table: "Commissions",
+                column: "OrderItemServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Commissions_PartnerId",
@@ -330,9 +507,84 @@ namespace TemplateMarket.Infrastructure.Migrations
                 column: "PartnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Commissions_PartnerId1",
+                table: "Commissions",
+                column: "PartnerId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companies_EntityId",
+                table: "Companies",
+                column: "EntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companies_OwnerUserId",
+                table: "Companies",
+                column: "OwnerUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_CompanyId",
+                table: "Customers",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_EntityId",
+                table: "Customers",
+                column: "EntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_UserId",
+                table: "Customers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ServiceId",
+                table: "OrderItems",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ServiceId1",
+                table: "OrderItems",
+                column: "ServiceId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_TemplateId",
+                table: "OrderItems",
+                column: "TemplateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_TemplateId1",
+                table: "OrderItems",
+                column: "TemplateId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItemServices_OrderItemId",
+                table: "OrderItemServices",
+                column: "OrderItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItemServices_PartnerId",
+                table: "OrderItemServices",
+                column: "PartnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItemServices_ServiceId",
+                table: "OrderItemServices",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItemServices_ServiceId1",
+                table: "OrderItemServices",
+                column: "ServiceId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItemServices_WorkOrderId2",
+                table: "OrderItemServices",
+                column: "WorkOrderId2");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
@@ -365,20 +617,45 @@ namespace TemplateMarket.Infrastructure.Migrations
                 column: "PartnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_User_EntityId",
+                table: "User",
+                column: "EntityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WorkOrders_AssignedToPartnerId",
                 table: "WorkOrders",
                 column: "AssignedToPartnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkOrders_OrderItemId",
+                name: "IX_WorkOrders_OrderItemServiceId",
                 table: "WorkOrders",
-                column: "OrderItemId",
+                column: "OrderItemServiceId",
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Commissions_OrderItemServices_OrderItemServiceId",
+                table: "Commissions",
+                column: "OrderItemServiceId",
+                principalTable: "OrderItemServices",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_OrderItemServices_WorkOrders_WorkOrderId2",
+                table: "OrderItemServices",
+                column: "WorkOrderId2",
+                principalTable: "WorkOrders",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_WorkOrders_OrderItemServices_OrderItemServiceId",
+                table: "WorkOrders");
+
             migrationBuilder.DropTable(
                 name: "Commissions");
 
@@ -392,31 +669,43 @@ namespace TemplateMarket.Infrastructure.Migrations
                 name: "TemplatePlatforms");
 
             migrationBuilder.DropTable(
-                name: "WorkOrders");
-
-            migrationBuilder.DropTable(
-                name: "Services");
-
-            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Platforms");
 
             migrationBuilder.DropTable(
-                name: "Templates");
+                name: "OrderItemServices");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "Partners");
+                name: "WorkOrders");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "Services");
+
+            migrationBuilder.DropTable(
+                name: "Templates");
+
+            migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Partners");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Entities");
         }
     }
 }
