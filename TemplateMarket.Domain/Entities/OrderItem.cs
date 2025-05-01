@@ -13,7 +13,7 @@ public class OrderItem : BaseEntity
     public int Quantity { get; set; } = 1;
     public decimal UnitPrice { get; set; }
 
-    public ICollection<OrderItemService> OrderItemServices { get; private set; } = new List<OrderItemService>();
+    public virtual ICollection<OrderItemService> OrderItemServices { get; private set; } = new List<OrderItemService>();
 
     public OrderItem() { }
 }

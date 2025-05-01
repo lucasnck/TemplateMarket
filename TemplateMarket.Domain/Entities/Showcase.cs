@@ -10,5 +10,5 @@ public class Showcase : BaseEntity
     public long? CategoryId { get; set; }
     public virtual Category? Category { get; set; }
 
-    public ICollection<ShowcaseProduct> ShowcaseProducts { get; private set; } = new List<ShowcaseProduct>();
+    public virtual ICollection<ShowcaseProduct> ShowcaseProducts { get; private set; } = new List<ShowcaseProduct>();
 }

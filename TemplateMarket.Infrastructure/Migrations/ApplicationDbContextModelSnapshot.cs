@@ -47,6 +47,12 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("PlatformId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("PlatformId2")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
@@ -55,6 +61,8 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PlatformId2");
 
                     b.ToTable("Categories");
                 });
@@ -262,20 +270,11 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
-
-                    b.Property<long?>("ServiceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("ServiceId1")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("TemplateId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("TemplateId1")
-                        .HasColumnType("bigint");
 
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)
@@ -288,13 +287,7 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ServiceId");
-
-                    b.HasIndex("ServiceId1");
-
-                    b.HasIndex("TemplateId");
-
-                    b.HasIndex("TemplateId1");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
                 });
@@ -313,13 +306,13 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<long>("OrderItemId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("PartnerId")
+                    b.Property<long?>("OrderItemId1")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ServiceId")
+                    b.Property<long>("PartnerId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ServiceId1")
+                    b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("UnitPrice")
@@ -329,23 +322,15 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("WorkOrderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("WorkOrderId2")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrderItemId");
 
+                    b.HasIndex("OrderItemId1");
+
                     b.HasIndex("PartnerId");
 
-                    b.HasIndex("ServiceId");
-
-                    b.HasIndex("ServiceId1");
-
-                    b.HasIndex("WorkOrderId2");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderItemServices");
                 });
@@ -394,6 +379,9 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -417,10 +405,104 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId")
+                        .IsUnique();
+
                     b.ToTable("Platforms");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.Service", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Product", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CategoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("PartnerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("PartnerId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ProductType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("StockQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("PartnerId");
+
+                    b.HasIndex("PartnerId1");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ProductCategory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProductId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId1");
+
+                    b.ToTable("ProductCategories");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ServiceDetail", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -431,22 +513,17 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("EstimatedDeliveryDays")
+                        .HasColumnType("integer");
 
                     b.Property<long?>("PartnerId")
                         .HasColumnType("bigint");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SupportType")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -455,34 +532,45 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasIndex("PartnerId");
 
-                    b.ToTable("Services");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ServiceDetails");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.ServiceCategory", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Showcase", b =>
                 {
-                    b.Property<long>("ServiceId")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<long>("CategoryId")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("CategoryId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("ServiceId", "CategoryId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ServiceCategories");
+                    b.ToTable("Showcase");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.Template", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ShowcaseProduct", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -493,32 +581,43 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long?>("PartnerId")
+                    b.Property<long>("ProductId")
                         .HasColumnType("bigint");
+
+                    b.Property<long>("ShowcaseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ShowcaseId");
+
+                    b.ToTable("ShowcaseProduct");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplateDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PreviewUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Theme")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ThumbnailUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -527,57 +626,10 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PartnerId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
-                    b.ToTable("Templates");
-                });
-
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplateCategory", b =>
-                {
-                    b.Property<long>("TemplateId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CategoryId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("TemplateId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("TemplateCategories");
-                });
-
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplatePlatform", b =>
-                {
-                    b.Property<long>("TemplateId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("PlatformId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("TemplateId", "PlatformId");
-
-                    b.HasIndex("PlatformId");
-
-                    b.ToTable("TemplatePlatforms");
+                    b.ToTable("TemplateDetails");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.User", b =>
@@ -630,17 +682,26 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AssignedToPartnerId")
+                    b.Property<long?>("AssignedToUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("CompletedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("FinishedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("OrderItemServiceId")
+                    b.Property<long?>("OrderItemId")
                         .HasColumnType("bigint");
+
+                    b.Property<long?>("OrderItemServiceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("PartnerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("StartedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -651,12 +712,24 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedToPartnerId");
+                    b.HasIndex("AssignedToUserId");
 
-                    b.HasIndex("OrderItemServiceId")
-                        .IsUnique();
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("OrderItemServiceId");
+
+                    b.HasIndex("PartnerId");
 
                     b.ToTable("WorkOrders");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Category", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Platform", "Platform")
+                        .WithMany()
+                        .HasForeignKey("PlatformId2");
+
+                    b.Navigation("Platform");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Commission", b =>
@@ -751,141 +824,153 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TemplateMarket.Domain.Entities.Service", null)
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TemplateMarket.Domain.Entities.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId1");
-
-                    b.HasOne("TemplateMarket.Domain.Entities.Template", null)
-                        .WithMany()
-                        .HasForeignKey("TemplateId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TemplateMarket.Domain.Entities.Template", "Template")
-                        .WithMany()
-                        .HasForeignKey("TemplateId1");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Order");
 
-                    b.Navigation("Service");
-
-                    b.Navigation("Template");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.OrderItemService", b =>
                 {
                     b.HasOne("TemplateMarket.Domain.Entities.OrderItem", "OrderItem")
-                        .WithMany("Services")
+                        .WithMany()
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TemplateMarket.Domain.Entities.OrderItem", null)
+                        .WithMany("OrderItemServices")
+                        .HasForeignKey("OrderItemId1");
+
                     b.HasOne("TemplateMarket.Domain.Entities.Partner", "Partner")
                         .WithMany()
-                        .HasForeignKey("PartnerId");
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("TemplateMarket.Domain.Entities.Service", null)
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ServiceId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TemplateMarket.Domain.Entities.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TemplateMarket.Domain.Entities.WorkOrder", "WorkOrder")
-                        .WithMany()
-                        .HasForeignKey("WorkOrderId2")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("OrderItem");
 
                     b.Navigation("Partner");
 
-                    b.Navigation("Service");
-
-                    b.Navigation("WorkOrder");
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.Service", b =>
-                {
-                    b.HasOne("TemplateMarket.Domain.Entities.Partner", null)
-                        .WithMany("Services")
-                        .HasForeignKey("PartnerId");
-                });
-
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.ServiceCategory", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Platform", b =>
                 {
                     b.HasOne("TemplateMarket.Domain.Entities.Category", "Category")
-                        .WithMany("ServiceCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TemplateMarket.Domain.Entities.Service", "Service")
-                        .WithMany("ServiceCategories")
-                        .HasForeignKey("ServiceId")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.Platform", "CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
-
-                    b.Navigation("Service");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.Template", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Product", b =>
                 {
+                    b.HasOne("TemplateMarket.Domain.Entities.Category", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId");
+
                     b.HasOne("TemplateMarket.Domain.Entities.Partner", "Partner")
-                        .WithMany("Templates")
-                        .HasForeignKey("PartnerId");
+                        .WithMany()
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Partner", null)
+                        .WithMany("Products")
+                        .HasForeignKey("PartnerId1");
 
                     b.Navigation("Partner");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplateCategory", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ProductCategory", b =>
                 {
                     b.HasOne("TemplateMarket.Domain.Entities.Category", "Category")
-                        .WithMany("TemplateCategories")
-                        .HasForeignKey("CategoryId")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.ProductCategory", "CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TemplateMarket.Domain.Entities.Template", "Template")
-                        .WithMany("TemplateCategories")
-                        .HasForeignKey("TemplateId")
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.ProductCategory", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", null)
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Category");
 
-                    b.Navigation("Template");
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplatePlatform", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ServiceDetail", b =>
                 {
-                    b.HasOne("TemplateMarket.Domain.Entities.Platform", "Platform")
-                        .WithMany("TemplatePlatforms")
-                        .HasForeignKey("PlatformId")
+                    b.HasOne("TemplateMarket.Domain.Entities.Partner", null)
+                        .WithMany("Services")
+                        .HasForeignKey("PartnerId");
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.ServiceDetail", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TemplateMarket.Domain.Entities.Template", "Template")
-                        .WithMany("TemplatePlatforms")
-                        .HasForeignKey("TemplateId")
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Showcase", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ShowcaseProduct", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Showcase", "Showcase")
+                        .WithMany("ShowcaseProducts")
+                        .HasForeignKey("ShowcaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Platform");
+                    b.Navigation("Product");
 
-                    b.Navigation("Template");
+                    b.Navigation("Showcase");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplateDetail", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.TemplateDetail", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.User", b =>
@@ -901,26 +986,35 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkOrder", b =>
                 {
-                    b.HasOne("TemplateMarket.Domain.Entities.Partner", "AssignedToPartner")
-                        .WithMany("WorkOrders")
-                        .HasForeignKey("AssignedToPartnerId");
+                    b.HasOne("TemplateMarket.Domain.Entities.User", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("TemplateMarket.Domain.Entities.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TemplateMarket.Domain.Entities.OrderItemService", "OrderItemService")
-                        .WithOne()
-                        .HasForeignKey("TemplateMarket.Domain.Entities.WorkOrder", "OrderItemServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("OrderItemServiceId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("AssignedToPartner");
+                    b.HasOne("TemplateMarket.Domain.Entities.Partner", null)
+                        .WithMany("WorkOrders")
+                        .HasForeignKey("PartnerId");
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("OrderItem");
 
                     b.Navigation("OrderItemService");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Category", b =>
                 {
-                    b.Navigation("ServiceCategories");
-
-                    b.Navigation("TemplateCategories");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Customer", b =>
@@ -935,35 +1029,28 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.OrderItem", b =>
                 {
-                    b.Navigation("Services");
+                    b.Navigation("OrderItemServices");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Partner", b =>
                 {
                     b.Navigation("Commissions");
 
-                    b.Navigation("Services");
+                    b.Navigation("Products");
 
-                    b.Navigation("Templates");
+                    b.Navigation("Services");
 
                     b.Navigation("WorkOrders");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.Platform", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Product", b =>
                 {
-                    b.Navigation("TemplatePlatforms");
+                    b.Navigation("ProductCategories");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.Service", b =>
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Showcase", b =>
                 {
-                    b.Navigation("ServiceCategories");
-                });
-
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.Template", b =>
-                {
-                    b.Navigation("TemplateCategories");
-
-                    b.Navigation("TemplatePlatforms");
+                    b.Navigation("ShowcaseProducts");
                 });
 #pragma warning restore 612, 618
         }

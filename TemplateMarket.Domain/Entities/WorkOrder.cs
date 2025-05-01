@@ -6,13 +6,13 @@ namespace TemplateMarket.Domain.Entities;
 public class WorkOrder : BaseEntity
 {
     public long? OrderItemId { get; set; }
-    public OrderItem? OrderItem { get; set; }
+    public virtual OrderItem? OrderItem { get; set; }
 
     public long? OrderItemServiceId { get; set; }
-    public OrderItemService? OrderItemService { get; set; }
+    public virtual OrderItemService? OrderItemService { get; set; }
 
     public long? AssignedToUserId { get; set; }
-    public User? AssignedToUser { get; set; }
+    public virtual User? AssignedToUser { get; set; }
 
     public WorkOrderStatus Status { get; set; } = WorkOrderStatus.Pending;
     public DateTime? StartedDate { get; set; }
