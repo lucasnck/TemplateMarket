@@ -8,8 +8,8 @@ namespace TemplateMarket.Application.Mappings
     {
         public ServiceMappingProfile()
         {
-            CreateMap<CreateServiceDto, Service>();
-            CreateMap<UpdateServiceDto, Service>();
+            CreateMap<CreateServiceDto, ServiceDetail>();
+            CreateMap<UpdateServiceDto, ServiceDetail>();
         }
     }
 }

@@ -19,13 +19,8 @@ public class ApplicationDbContext : DbContext
     }
 
     // DbSets para as entidades
-    public DbSet<Template> Templates { get; set; }
     public DbSet<Platform> Platforms { get; set; }
-    public DbSet<TemplatePlatform> TemplatePlatforms { get; set; }
     public DbSet<Category> Categories { get; set; }
-    public DbSet<TemplateCategory> TemplateCategories { get; set; }
-    public DbSet<Service> Services { get; set; }
-    public DbSet<ServiceCategory> ServiceCategories { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
@@ -37,6 +32,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<Entity> Entities { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<ServiceDetail> ServiceDetails { get; set; }
+    public DbSet<TemplateDetail> TemplateDetails { get; set; }
 
     // Adicione mais DbSets conforme você for criando mais entidades no futuro
     // public DbSet<OutraEntidade> OutraEntidade { get; set; }

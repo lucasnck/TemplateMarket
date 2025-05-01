@@ -11,15 +11,8 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.Type)
+                .HasConversion<string>()
                 .IsRequired();
-
-            builder.HasMany(c => c.TemplateCategories)
-                .WithOne(tc => tc.Category)
-                .HasForeignKey(tc => tc.CategoryId);
-
-            builder.HasMany(c => c.ServiceCategories)
-                .WithOne(sc => sc.Category)
-                .HasForeignKey(sc => sc.CategoryId);
         }
     }
 }

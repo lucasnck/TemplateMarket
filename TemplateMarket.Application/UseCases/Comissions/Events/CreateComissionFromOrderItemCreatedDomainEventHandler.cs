@@ -17,17 +17,17 @@ public class CreateComissionFromOrderItemDomainEventHandler(
         var orderItem = await _orderItemRepo.GetByIdAsync(notification.Id)
             ?? throw new NotFoundException(nameof(OrderItem), notification.Id);
         
-        if (orderItem.Template?.Partner == null)
+        if (orderItem.Product?.Partner == null)
             return;
 
-        decimal percentualRepasse = GetPercentualRepasse(orderItem.Template.Partner?.Type);
+        decimal percentualRepasse = GetPercentualRepasse(orderItem.Product.Partner?.Type);
 
         if (percentualRepasse == 0)
             return; // Partner sem direito a comissão
 
         var commission = new Commission()
         {
-            Partner = orderItem.Template.Partner,
+            Partner = orderItem.Product.Partner,
             SaleAmount = orderItem.UnitPrice,
             CommissionAmount = orderItem.UnitPrice * percentualRepasse,
             OrderItem = orderItem,

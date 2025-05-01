@@ -2,6 +2,7 @@
 using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
+using TemplateMarket.Domain.Enums;
 using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.UseCases.WorkOrders.Events;
@@ -13,14 +14,18 @@ public class OrderItemServiceCreatedDomainEventHandler(
 {
     public async Task Handle(OrderItemServiceCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var orderItemservice = await _orderItemServiceRepo.GetByIdAsync(notification.Id)
-            ?? throw new NotFoundException(nameof(OrderItem), notification.Id);
+        var orderItemService = (await _orderItemServiceRepo.FindAsync(ois => ois.Id == notification.Id)).First();
 
-        var workOrder = new WorkOrder();
-        workOrder.AssignedToPartner = orderItemservice.Partner;
-        workOrder.OrderItemService = orderItemservice;
+        if (orderItemService != null)
+        {
+            var workOrder = new WorkOrder()
+            {
+                OrderItemService = orderItemService,
+                Status = WorkOrderStatus.Pending,
+            };
 
-        await _workOrderRepo.AddAsync(workOrder);
-        await _workOrderRepo.SaveChangesAsync();
+            await _workOrderRepo.AddAsync(workOrder);
+            await _workOrderRepo.SaveChangesAsync();
+        }
     }
 }

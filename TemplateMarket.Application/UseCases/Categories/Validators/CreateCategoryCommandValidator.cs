@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using TemplateMarket.Application.UseCases.Templates.Commands;
+using TemplateMarket.Application.UseCases.Products.Commands;
 
 namespace TemplateMarket.Application.UseCases.Templates.Validators;
 
-public class CreateCategoryCommandValidator : AbstractValidator<CreateTemplateCommand>
+public class CreateCategoryCommandValidator : AbstractValidator<CreateProductCommand>
 {
     public CreateCategoryCommandValidator()
     {

@@ -11,28 +11,16 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name)
-            .HasMaxLength(200)
-            .IsRequired();
-
-        builder.Property(x => x.Description)
-            .HasMaxLength(1000);
-
-        builder.Property(x => x.Price)
-            .HasPrecision(18, 2)
             .IsRequired();
 
         builder.Property(x => x.SKU)
-            .HasMaxLength(100)
             .IsRequired();
-
-        builder.Property(x => x.StockQuantity);
 
         builder.Property(x => x.IsActive)
             .IsRequired();
 
         builder.Property(x => x.ProductType)
-            .HasConversion<string>() // Salva como texto no banco
-            .HasMaxLength(50)
+            .HasConversion<string>()
             .IsRequired();
 
         builder.HasOne(x => x.Partner)

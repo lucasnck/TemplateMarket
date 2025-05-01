@@ -4,24 +4,16 @@ namespace TemplateMarket.Domain.Entities;
 
 public class OrderItemService : BaseEntity
 {
-    public long OrderItemId { get; set; }
+    public long OrderItemId { get; private set; }
     public virtual OrderItem OrderItem { get; set; }
 
-    public long ServiceId { get; set; }
-    public virtual Service Service { get; set; }
+    public long ProductId { get; private set; }
+    public virtual Product Product { get; set; }
 
-    public long? PartnerId { get; set; }
+    public long PartnerId { get; private set; }
     public virtual Partner Partner { get; set; }
-    public decimal UnitPrice { get; set; }
 
-    public long WorkOrderId { get; set; }
-    public virtual WorkOrder WorkOrder { get; set; }
+    public decimal UnitPrice { get; private set; }
 
-    private OrderItemService() { }
-
-    public OrderItemService(long serviceId, decimal price)
-    {
-        ServiceId = serviceId;
-        UnitPrice = price;
-    }
+    public OrderItemService() { }
 }

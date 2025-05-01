@@ -6,5 +6,6 @@ public enum ProductType
     Service = 2,
     LandingPage = 3,
     Blog = 4,
-    LojaCustomizavel = 5
+    Custom = 5,
+    Composite = 6,
 }

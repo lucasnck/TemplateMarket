@@ -9,5 +9,9 @@ public class PlatformConfiguration : IEntityTypeConfiguration<Platform>
     public void Configure(EntityTypeBuilder<Platform> builder)
     {
         builder.HasKey(p => p.Id);
+
+        builder.HasOne(p => p.Category)
+            .WithOne()
+            .HasForeignKey<Platform>(p => p.CategoryId);
     }
 }

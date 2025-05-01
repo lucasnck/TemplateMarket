@@ -15,13 +15,13 @@ public class OrderItemServiceConfiguration : IEntityTypeConfiguration<OrderItemS
             .IsRequired();
 
         builder.HasOne(x => x.OrderItem)
-            .WithMany(x => x.Services)
+            .WithMany()
             .HasForeignKey(x => x.OrderItemId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne<Service>()
+        builder.HasOne(x => x.Product)
             .WithMany()
-            .HasForeignKey(x => x.ServiceId)
+            .HasForeignKey(x => x.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

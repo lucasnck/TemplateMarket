@@ -1,19 +1,18 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Threading.RateLimiting;
 using TemplateMarket.API.Filters;
+using TemplateMarket.Application.Common.Behaviors;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Mappings;
-using TemplateMarket.Application.UseCases.Templates.Commands;
-using TemplateMarket.Application.UseCases.Templates.Validators;
+using TemplateMarket.Application.UseCases.Products.Commands;
+using TemplateMarket.Application.UseCases.Products.Validators;
 using TemplateMarket.Infrastructure.Persistence;
 using TemplateMarket.Infrastructure.Persistence.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi.Models;
-using TemplateMarket.Application.Common.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +58,7 @@ builder.Services.AddControllers(options =>
 });
 
 // Registra os handlers do MediatR
-builder.Services.AddMediatR(typeof(CreateTemplateCommandHandler).Assembly);
+builder.Services.AddMediatR(typeof(CreateProductCommandHandler).Assembly);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options
@@ -108,9 +107,9 @@ builder.Services.AddScoped<CaptchaService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddValidatorsFromAssembly(typeof(CreateTemplateCommandValidator).Assembly);
+builder.Services.AddValidatorsFromAssembly(typeof(CreateProductCommandValidator).Assembly);
 
-builder.Services.AddAutoMapper(typeof(TemplateMappingProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(ProductMappingProfile).Assembly);
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));

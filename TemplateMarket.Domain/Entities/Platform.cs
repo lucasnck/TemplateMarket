@@ -10,5 +10,6 @@ public class Platform : BaseEntity, IActivable
     public string LogoUrl { get; set; } = default!;
     public bool IsActive { get; set; } = true;
 
-    public virtual ICollection<TemplatePlatform> TemplatePlatforms { get; set; } = new List<TemplatePlatform>();
+    public long CategoryId { get; set; }
+    public virtual Category Category { get; set; }
 }

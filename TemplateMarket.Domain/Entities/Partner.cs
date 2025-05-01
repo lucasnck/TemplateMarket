@@ -12,8 +12,8 @@ public class Partner : BaseEntity, IActivable
     public string? PortfolioUrl { get; set; }
     public bool IsActive { get; set; } = true;
 
-    public virtual ICollection<Template> Templates { get; set; } = new List<Template>();
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
-    public virtual ICollection<Commission> Commissions { get; set; } = new List<Commission>();
-    public virtual ICollection<WorkOrder> WorkOrders { get; set; } = new List<WorkOrder>();
+    public virtual ICollection<Product> Products { get; set; } = [];
+    public virtual ICollection<ServiceDetail> Services { get; set; } = [];
+    public virtual ICollection<Commission> Commissions { get; set; } = [];
+    public virtual ICollection<WorkOrder> WorkOrders { get; set; } = [];
 }

@@ -25,20 +25,9 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // TemplateId e ServiceId opcionais (nullable)
-            builder.HasOne<Template>()
-                .WithMany()
-                .HasForeignKey(x => x.TemplateId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne<Service>()
-                .WithMany()
-                .HasForeignKey(x => x.ServiceId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Relacionamento com OrderItemService
-            builder.HasMany(x => x.Services)
-                .WithOne(x => x.OrderItem)
+            builder.HasMany(x => x.OrderItemServices)
+                .WithOne()
                 .HasForeignKey(x => x.OrderItemId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
