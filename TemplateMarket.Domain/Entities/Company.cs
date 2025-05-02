@@ -10,6 +10,8 @@ public class Company : BaseEntity
     public long OwnerUserId { get; private set; }
     public virtual User Owner { get; private set; }
 
+    public virtual ICollection<UserCompanyGroup> UserCompanyGroups { get; set; }
+
     private Company() { }
 
     public Company(long entityId, long ownerUserId)

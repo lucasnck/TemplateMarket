@@ -36,6 +36,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<ServiceDetail> ServiceDetails { get; set; }
     public DbSet<TemplateDetail> TemplateDetails { get; set; }
 
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<GroupRole> GroupRoles { get; set; }
+    public DbSet<UserGroup> UserGroups { get; set; }
+    public DbSet<UserCompanyGroup> UserCompanyGroups { get; set; }
+    public DbSet<UserGroupTemplate> UserGroupTemplates { get; set; }
+
     // Adicione mais DbSets conforme você for criando mais entidades no futuro
     // public DbSet<OutraEntidade> OutraEntidade { get; set; }
 

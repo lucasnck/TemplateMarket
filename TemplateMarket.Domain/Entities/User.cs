@@ -13,4 +13,6 @@ public class User : BaseEntity
     public long EntityId { get; set; }
     public virtual Entity Entity { get; set; }
 
+    public virtual ICollection<UserGroup> UserGroups { get; set; }
+    public virtual ICollection<UserCompanyGroup> UserCompanyGroups { get; set; }
 }

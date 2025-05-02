@@ -8,6 +8,8 @@ using System.Threading.RateLimiting;
 using TemplateMarket.API.Filters;
 using TemplateMarket.Application.Common.Behaviors;
 using TemplateMarket.Application.Common.Interfaces;
+using TemplateMarket.Application.Common.Interfaces.Permissions;
+using TemplateMarket.Application.Common.Services;
 using TemplateMarket.Application.Mappings;
 using TemplateMarket.Application.UseCases.Products.Commands;
 using TemplateMarket.Application.UseCases.Products.Validators;
@@ -21,6 +23,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ApiExceptionFilter>();
+});
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -49,6 +56,17 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         { jwtSecurityScheme, Array.Empty<string>() }
+    });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // frontend local
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -115,7 +133,13 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthCommandEnricherBehavior<,>));
 
+builder.Services.AddScoped<IUserSessionService, RedisUserSessionService>();
+
+
 var app = builder.Build();
+
+// CORS precisa vir antes de qualquer autenticação
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -126,7 +150,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 

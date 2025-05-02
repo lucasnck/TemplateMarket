@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TemplateMarket.Application.UseCases.Auth.Commands.ChangePassword;
@@ -14,6 +15,7 @@ public class AuthController(IMediator _mediator) : ControllerBase
     [HttpPost("register")]
     [AllowAnonymous]
     [EnableRateLimiting("PublicEndpoints")]
+    [EnableCors("AllowFrontend")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         => Ok(await _mediator.Send(command));
 
@@ -38,11 +40,11 @@ public class AuthController(IMediator _mediator) : ControllerBase
     [Authorize]
     [HttpPut("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
-    => Ok(await _mediator.Send(command));
+        => Ok(await _mediator.Send(command));
 
     [Authorize]
     [HttpGet("self")]
     public async Task<IActionResult> GetSelf()
-    => Ok(await _mediator.Send(new GetSelfQuery()));
+        => Ok(await _mediator.Send(new GetSelfQuery()));
 
 }
