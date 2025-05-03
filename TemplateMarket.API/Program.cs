@@ -124,6 +124,7 @@ builder.Services.AddScoped<CaptchaService>();
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IPermissionResolver, PermissionResolver>();
 
 builder.Services.AddValidatorsFromAssembly(typeof(CreateProductCommandValidator).Assembly);
 
@@ -133,10 +134,11 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthCommandEnricherBehavior<,>));
 
+builder.Services.AddScoped<IActiveProfileService, ActiveProfileService>();
 builder.Services.AddScoped<IUserSessionService, RedisUserSessionService>();
 
-
 var app = builder.Build();
+
 
 // CORS precisa vir antes de qualquer autenticação
 app.UseCors("AllowFrontend");

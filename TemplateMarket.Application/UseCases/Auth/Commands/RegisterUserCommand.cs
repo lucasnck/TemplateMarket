@@ -44,6 +44,6 @@ public class RegisterUserCommandHandler(
 
         user.AddDomainEvent(new CustomerCreatedDomainEvent(user.Id));
 
-        return new AuthResponse(user.Id, user.Email, user.Role, token);
+        return new AuthResponse(user.Id, user.Email);
     }
 }

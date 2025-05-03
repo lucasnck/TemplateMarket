@@ -1,9 +1,6 @@
-﻿namespace TemplateMarket.Application.Responses
-{
-    public record AuthResponse(
-        long Id,
-        string Email,
-        string Role,
-        string Token
-    );
-}
+﻿namespace TemplateMarket.Application.Responses;
+
+public record AuthResponse(
+    long UserId,
+    string Email
+);

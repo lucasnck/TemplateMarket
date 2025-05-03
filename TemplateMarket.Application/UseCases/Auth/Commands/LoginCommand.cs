@@ -22,6 +22,6 @@ public class LoginCommandHandler(
             throw new UnauthorizedAccessException("Credenciais inválidas.");
 
         var token = _tokenGenerator.GenerateToken(user);
-        return new AuthResponse(user.Id, user.Email, user.Role, token);
+        return new AuthResponse(user.Id, user.Email);
     }
 }

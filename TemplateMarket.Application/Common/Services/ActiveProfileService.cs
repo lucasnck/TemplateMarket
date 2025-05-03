@@ -12,15 +12,15 @@ public class ActiveProfileService(
 {
     public long UserId => long.Parse(_httpContext.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
     public string Email => _httpContext.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value!;
-
+    
     public async Task<bool> IsCompanyAsync()
     {
         var companyId = await GetCompanyIdAsync();
         return companyId != null;
     }
 
-    public Task<long?> GetCompanyIdAsync()
-        => _sessionService.GetActiveCompanyIdAsync(UserId);
+    public async Task<long?> GetCompanyIdAsync()
+        => await _sessionService.GetActiveCompanyIdAsync(UserId);
 
     public async Task<List<string>> GetRolesAsync()
     {
