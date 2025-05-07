@@ -16,6 +16,5 @@ public class Entity : BaseEntity
         Type = type;
     }
 
-    // Para o EF Core
-    private Entity() { }
+    public Entity() { }
 }

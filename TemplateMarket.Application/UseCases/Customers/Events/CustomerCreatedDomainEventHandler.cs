@@ -5,8 +5,9 @@ using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.UseCases.Customers.Events;
 
-public class CustomerCreatedDomainEventHandler(IRepository<Customer> _repository)
-    : INotificationHandler<CustomerCreatedDomainEvent>
+public class CustomerCreatedDomainEventHandler(
+    IRepository _repo
+) : INotificationHandler<CustomerCreatedDomainEvent>
 {
     public async Task Handle(CustomerCreatedDomainEvent notification, CancellationToken ct)
     {
@@ -15,7 +16,7 @@ public class CustomerCreatedDomainEventHandler(IRepository<Customer> _repository
             UserId = notification.UserId
         };
 
-        await _repository.AddAsync(customer);
-        await _repository.SaveChangesAsync();
+        await _repo.AddAsync(customer);
+        await _repo.SaveChangesAsync();
     }
 }

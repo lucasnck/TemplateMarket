@@ -7,12 +7,12 @@ namespace TemplateMarket.Application.UseCases.Auth.Commands.ResetPassword;
 public record ResetPasswordCommand(string Token, string NewPassword) : IRequest<Unit>;
 
 public class ResetPasswordCommandHandler(
-    IRepository<User> _repository
+    IRepository _repo
 ) : IRequestHandler<ResetPasswordCommand, Unit>
 {
     public async Task<Unit> Handle(ResetPasswordCommand request, CancellationToken ct)
     {
-        var user = await _repository.SingleOrDefaultAsync(u => u.ResetToken == request.Token);
+        var user = _repo.Query<User>().FirstOrDefault(u => u.ResetToken == request.Token);
         if (user is null || user.ResetTokenExpiresAt is null || user.ResetTokenExpiresAt < DateTime.UtcNow)
             throw new Exception("Token inválido ou expirado.");
 
@@ -21,7 +21,7 @@ public class ResetPasswordCommandHandler(
         user.ResetToken = null;
         user.ResetTokenExpiresAt = null;
 
-        await _repository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return Unit.Value;
     }

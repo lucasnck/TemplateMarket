@@ -32,7 +32,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Entity> Entities { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<Product> Products { get; set; }
-    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }   
     public DbSet<ServiceDetail> ServiceDetails { get; set; }
     public DbSet<TemplateDetail> TemplateDetails { get; set; }
 

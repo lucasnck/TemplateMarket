@@ -1,56 +1,38 @@
 ﻿// Infrastructure/Persistence/Repositories/Repository.cs
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq.Expressions;
 using TemplateMarket.Application.Common.Interfaces;
-using TemplateMarket.Domain.Common.Entities;
 
 namespace TemplateMarket.Infrastructure.Persistence.Repositories;
 
-public class Repository<T> : IRepository<T> where T : BaseEntity
+public class Repository(ApplicationDbContext context) : IRepository
 {
-    private readonly ApplicationDbContext _context;
-    private readonly DbSet<T> _dbSet;
+    public IQueryable<T> Query<T>() where T : class => context.Set<T>();
 
-    public Repository(ApplicationDbContext context)
+    public IQueryable<T> QueryWithoutFilter<T>() where T : class =>
+        context.Set<T>().IgnoreQueryFilters();
+
+    public async Task<T?> GetByIdAsync<T>(long id) where T : class =>
+        await context.Set<T>().FindAsync(id);
+
+    public async Task<T?> SingleOrDefaultAsync<T>(Expression<Func<T, bool>> predicate) where T : class =>
+        await context.Set<T>().SingleOrDefaultAsync(predicate);
+
+    public async Task<IEnumerable<T>> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class =>
+        await context.Set<T>().Where(predicate).ToListAsync();
+
+    public async Task AddAsync<T>(T entity) where T : class =>
+        await context.Set<T>().AddAsync(entity);
+
+    public void Remove<T>(T entity) where T : class =>
+        context.Set<T>().Remove(entity);
+
+    public Task UpdateAsync<T>(T entity) where T : class
     {
-        _context = context;
-        _dbSet = context.Set<T>();
-    }
-
-    public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
-
-    public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().AsNoTracking().ToListAsync();
-
-    public async Task<T?> GetByIdAsync(long id) =>
-    await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
-
-    public async Task<T?> GetByIdWithoutFilterAsync(long id) =>
-        await _dbSet.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id);
-
-    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate) =>
-        await _dbSet.Where(predicate).ToListAsync();
-
-    public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
-    {
-        return _context.Set<T>().SingleOrDefaultAsync(predicate);
-    }
-
-    public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
-    => _context.Set<T>().AnyAsync(predicate);
-
-    public void Remove(T entity) => _dbSet.Remove(entity);
-
-    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
-
-    public Task UpdateAsync(T entity)
-    {
-        _dbSet.Update(entity);
+        context.Set<T>().Update(entity);
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(T entity)
-    {
-        _dbSet.Remove(entity);
-        return Task.CompletedTask;
-    }
+    public Task SaveChangesAsync() => context.SaveChangesAsync();
 }

@@ -13,17 +13,17 @@ public class UpdateProductCommand : UpdateProductDto, IRequest<ProductResponse>
 }
 
 public class UpdateProductHandler(
-    IRepository<Product> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<UpdateProductCommand, ProductResponse>
 {
     public async Task<ProductResponse> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetOrThrow(request.Id);
+        var entity = await _repo.SingleOrThrow<Product>(x => x.Id == request.Id);
 
         _mapper.Map(request, entity);
 
-        await _repository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return _mapper.Map<ProductResponse>(entity);
     }

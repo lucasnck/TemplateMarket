@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Models\" />
-    <Folder Include="Common\Services\" />
     <Folder Include="UseCases\Orders\Events\" />
   </ItemGroup>
 

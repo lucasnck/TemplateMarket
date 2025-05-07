@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Domain.Enums;
@@ -8,24 +8,20 @@ using TemplateMarket.Domain.Events;
 namespace TemplateMarket.Application.UseCases.WorkOrders.Events;
 
 public class OrderItemServiceCreatedDomainEventHandler(
-    IRepository<WorkOrder> _workOrderRepo,
-    IRepository<OrderItemService> _orderItemServiceRepo
+    IRepository _repo
 ) : INotificationHandler<OrderItemServiceCreatedDomainEvent>
 {
     public async Task Handle(OrderItemServiceCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var orderItemService = (await _orderItemServiceRepo.FindAsync(ois => ois.Id == notification.Id)).First();
+        var orderItemService = await _repo.SingleOrThrow<OrderItemService>(ois => ois.Id == notification.Id);
 
-        if (orderItemService != null)
+        var workOrder = new WorkOrder()
         {
-            var workOrder = new WorkOrder()
-            {
-                OrderItemService = orderItemService,
-                Status = WorkOrderStatus.Pending,
-            };
+            OrderItemService = orderItemService,
+            Status = WorkOrderStatus.Pending,
+        };
 
-            await _workOrderRepo.AddAsync(workOrder);
-            await _workOrderRepo.SaveChangesAsync();
-        }
+        await _repo.AddAsync(workOrder);
+        await _repo.SaveChangesAsync();
     }
 }

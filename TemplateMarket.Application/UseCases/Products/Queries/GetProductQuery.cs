@@ -11,13 +11,13 @@ public class GetProductQuery : IRequest<IEnumerable<ProductResponse>>
 }
 
 public class GetProductQueryHandler(
-    IRepository<Product> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<GetProductQuery, IEnumerable<ProductResponse>>
 {
     public async Task<IEnumerable<ProductResponse>> Handle(GetProductQuery request, CancellationToken cancellationToken)
     {
-        var result = await _repository.GetAllAsync();
+        var result = _repo.Query<Product>().AsEnumerable();
         return _mapper.Map<IEnumerable<ProductResponse>>(result);
     }
 }

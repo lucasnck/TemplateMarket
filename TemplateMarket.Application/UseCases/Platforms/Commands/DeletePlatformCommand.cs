@@ -8,15 +8,15 @@ namespace TemplateMarket.Application.UseCases.Templates.Commands;
 public record DeletePlatformCommand(long Id) : IRequest<Unit>;
 
 public class DeletePlatformCommandHandler(
-    IRepository<Platform> _repository
+    IRepository _repo
 ) : IRequestHandler<DeletePlatformCommand, Unit>
 {
     public async Task<Unit> Handle(DeletePlatformCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetOrThrow(request.Id);
+        var entity = await _repo.SingleOrThrow<Platform>(x => x.Id == request.Id);
 
-        await _repository.DeleteAsync(entity);
-        await _repository.SaveChangesAsync(); // se estiver usando Unit of Work
+        _repo.Remove(entity);
+        await _repo.SaveChangesAsync();
 
         return Unit.Value;
     }

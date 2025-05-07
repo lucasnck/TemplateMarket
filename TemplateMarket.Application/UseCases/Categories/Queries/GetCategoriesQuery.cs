@@ -10,13 +10,13 @@ public class GetCategoriesQuery : IRequest<IEnumerable<CategoryResponse>>
 }
 
 public class GetCategoriesQueryHandler(
-    IRepository<TemplateMarket.Domain.Entities.Category> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<GetCategoriesQuery, IEnumerable<CategoryResponse>>
 {
     public async Task<IEnumerable<CategoryResponse>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var result = await _repository.GetAllAsync();
+        var result = _repo.Query<TemplateMarket.Domain.Entities.Category>().AsEnumerable();
         return _mapper.Map<IEnumerable<CategoryResponse>>(result);
     }
 }

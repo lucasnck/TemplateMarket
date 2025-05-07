@@ -1,36 +1,84 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
+using TemplateMarket.Application.Responses;
+using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.Common.Services;
 
 public class ActiveProfileService(
     IHttpContextAccessor _httpContext,
-    IPermissionResolver _permissionResolver,
-    IUserSessionService _sessionService
+    //ICacheService _cacheService,
+    IRepository _repo
 ) : IActiveProfileService
 {
     public long UserId => long.Parse(_httpContext.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
-    public string Email => _httpContext.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value!;
-    
-    public async Task<bool> IsCompanyAsync()
+
+    public async Task<AvailableProfileResponse> GetCurrentProfile()
     {
-        var companyId = await GetCompanyIdAsync();
-        return companyId != null;
+        //var companyId = await _cacheService.GetValueAsync("active-profile:CompanyId");
+
+        var userCompanies = _repo.Query<UserCompany>().AsEnumerable();
+
+        var userCompany = userCompanies?
+            .FirstOrDefault(x => x.UserId == UserId && x.IsActive);
+
+        ActiveProfileResponse current = null;
+
+        if (userCompany == null)
+        {
+            var user = await _repo.GetByIdAsync<User>(UserId);
+
+            var userRoles = user.UserGroups
+                .SelectMany(ug => ug.Group.GroupRoles)
+                .Select(gr => gr.Role.Name)
+                .Distinct()
+                .ToList();
+
+            current = new ActiveProfileResponse(
+                user.Entity.Name,
+                user.Entity.Identification,
+                user.Entity.Type.ToString(),
+                user.Entity.CreatedDate,
+                userRoles
+            );
+        } else { 
+            var userCompanyRoles = userCompany?.
+                UserCompanyGroups
+                .SelectMany(ug => ug.Group.GroupRoles)
+                .Select(gr => gr.Role.Name)
+                .Distinct()
+                .ToList();
+
+            current = new ActiveProfileResponse(
+                userCompany.Company.Entity.Name,
+                userCompany.Company.Entity.Identification,
+                userCompany.Company.Entity.Type.ToString(),
+                userCompany.Company.Entity.CreatedDate,
+                userCompanyRoles
+            );
+        }
+
+        var profiles = userCompanies
+            .Where(uc => uc.Id != UserId)
+            .Select(uc => new ProfileResponse(
+                uc.Company.Entity.Name,
+                uc.Company.Entity.Identification,
+                uc.Company.Entity.Type.ToString(),
+                uc.CreatedDate
+            ));
+
+        return new AvailableProfileResponse(profiles, current);
     }
 
-    public async Task<long?> GetCompanyIdAsync()
-        => await _sessionService.GetActiveCompanyIdAsync(UserId);
-
-    public async Task<List<string>> GetRolesAsync()
+    public async Task SetActiveProfile(long? CompanyId)
     {
-        var companyId = await GetCompanyIdAsync();
-        return await _permissionResolver.ResolveRolesAsync(UserId, companyId);
-    }
+        var userCompanies = _repo.Query<UserCompany>().Where(x => x.UserId == UserId);
 
-    public async Task<List<string>> GetGroupsAsync()
-    {
-        var companyId = await GetCompanyIdAsync();
-        return await _permissionResolver.ResolveGroupsAsync(UserId, companyId);
+        foreach (var uc in userCompanies)
+        {
+            uc.IsActive = (CompanyId != null && uc.CompanyId == CompanyId);
+        }
     }
 }

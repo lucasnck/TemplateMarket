@@ -13,17 +13,17 @@ public class UpdatePlatformCommand : UpdatePlatformDto, IRequest<PlatformRespons
 }
 
 public class UpdatePlatformCommandHandler(
-    IRepository<Platform> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<UpdatePlatformCommand, PlatformResponse>
 {
     public async Task<PlatformResponse> Handle(UpdatePlatformCommand request, CancellationToken cancellationToken)
     {
-        var platform = await _repository.GetOrThrow(request.Id);
+        var platform = await _repo.SingleOrThrow<Platform>(x => x.Id == request.Id);
 
         _mapper.Map(request, platform);
 
-        await _repository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return _mapper.Map<PlatformResponse>(platform);
     }

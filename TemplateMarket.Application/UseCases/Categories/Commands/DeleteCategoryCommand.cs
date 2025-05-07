@@ -7,15 +7,15 @@ namespace TemplateMarket.Application.UseCases.Categories.Commands;
 public record DeleteCategoryCommand(long Id) : IRequest<Unit>;
 
 public class DeleteCategoryCommandHandler(
-    IRepository<TemplateMarket.Domain.Entities.Category> _repository
+    IRepository _repo
 ) : IRequestHandler<DeleteCategoryCommand, Unit>
 {
     public async Task<Unit> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetOrThrow(request.Id);
+        var entity = await _repo.SingleOrThrow<TemplateMarket.Domain.Entities.Category>(x => x.Id == request.Id);
 
-        await _repository.DeleteAsync(entity);
-        await _repository.SaveChangesAsync();
+        _repo.Remove<TemplateMarket.Domain.Entities.Category>(entity);
+        await _repo.SaveChangesAsync();
 
         return Unit.Value;
     }

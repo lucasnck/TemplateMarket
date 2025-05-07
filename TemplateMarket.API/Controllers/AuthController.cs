@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using TemplateMarket.Application.UseCases.Auth.Commands;
 using TemplateMarket.Application.UseCases.Auth.Commands.ChangePassword;
 using TemplateMarket.Application.UseCases.Auth.Commands.ForgotPassword;
 using TemplateMarket.Application.UseCases.Auth.Commands.ResetPassword;
+using TemplateMarket.Application.UseCases.Auth.Queries;
 using TemplateMarket.Application.UseCases.Auth.Queries.GetSelf;
 
 [Route("api/[controller]")]
@@ -47,4 +49,11 @@ public class AuthController(IMediator _mediator) : ControllerBase
     public async Task<IActionResult> GetSelf()
         => Ok(await _mediator.Send(new GetSelfQuery()));
 
+    [HttpGet("self/profiles")]
+    public async Task<IActionResult> GetSelfProfiles()
+        => Ok(await _mediator.Send(new GetSelfProfilesQuery()));
+
+    [HttpPut("self/profiles/switch")]
+    public async Task<IActionResult> PutSelfProfilesSwitch([FromBody] SelfProfileSwitchCommand command)
+        => Ok(await _mediator.Send(command));
 }

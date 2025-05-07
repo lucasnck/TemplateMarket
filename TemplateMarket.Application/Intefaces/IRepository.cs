@@ -3,17 +3,16 @@ using System.Linq.Expressions;
 
 namespace TemplateMarket.Application.Common.Interfaces;
 
-public interface IRepository<T> where T : class
+public interface IRepository
 {
-    Task<T?> GetByIdAsync(long id);
-    Task<T?> GetByIdWithoutFilterAsync(long id);
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
-    Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
-    Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
-    Task AddAsync(T entity);
-    void Remove(T entity);
-    Task UpdateAsync(T entity);
-    Task DeleteAsync(T entity);
+    IQueryable<T> Query<T>() where T : class;
+    IQueryable<T> QueryWithoutFilter<T>() where T : class;
+    Task<T?> GetByIdAsync<T>(long id) where T : class;
+    Task<T?> SingleOrDefaultAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
+    Task<IEnumerable<T>> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
+
+    Task AddAsync<T>(T entity) where T : class;
+    void Remove<T>(T entity) where T : class;
+    Task UpdateAsync<T>(T entity) where T : class;
     Task SaveChangesAsync();
 }

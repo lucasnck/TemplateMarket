@@ -12,20 +12,20 @@ public class CreatePlatformCommand : CreatePlatformDto, IRequest<long>
 }
 
 public class CreatePlatformCommandHandler(
-    IRepository<Platform> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<CreatePlatformCommand, long>
 {
     public async Task<long> Handle(CreatePlatformCommand request, CancellationToken cancellationToken)
     {
-        var exists = (await _repository.FindAsync(p => p.Name == request.Name)).Any();
+        var exists = _repo.Query<Platform>().Any(p => p.Name == request.Name);
         if (exists)
             throw new AlreadExistsException(nameof(Platform));
 
         var entity = _mapper.Map<Platform>(request);
 
-        await _repository.AddAsync(entity);
-        await _repository.SaveChangesAsync();
+        await _repo.AddAsync(entity);
+        await _repo.SaveChangesAsync();
 
         return entity.Id;
     }

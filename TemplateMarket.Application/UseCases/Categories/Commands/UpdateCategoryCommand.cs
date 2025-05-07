@@ -11,17 +11,17 @@ public class UpdateCategoryCommand : UpdateCategoryDto, IRequest<CategoryRespons
 }
 
 public class UpdateCategoryCommandHandler(
-    IRepository<TemplateMarket.Domain.Entities.Category> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<UpdateCategoryCommand, CategoryResponse>
 {
     public async Task<CategoryResponse> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetOrThrow(request.Id);
+        var entity = await _repo.SingleOrThrow<TemplateMarket.Domain.Entities.Category>(x => x.Id == request.Id);
 
         _mapper.Map(request, entity);
 
-        await _repository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return _mapper.Map<CategoryResponse>(entity);
     }

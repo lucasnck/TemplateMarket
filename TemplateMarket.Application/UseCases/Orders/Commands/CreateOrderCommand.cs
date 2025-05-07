@@ -17,16 +17,14 @@ public class CreateOrderCommand : AuthCommand, IRequest<long>
 }
 
 public class CreateOrderCommandHandler(
-    IRepository<Customer> _customerRepo,
-    IRepository<Product> _productRepo,
-    IRepository<Order> _orderRepo,
+    IRepository _repo,
     IMediator _mediator
 ) : IRequestHandler<CreateOrderCommand, long>
 {
     public async Task<long> Handle(CreateOrderCommand request, CancellationToken ct)
     {
-        var customer = await _customerRepo.SingleOrDefaultAsync(c => c.UserId == request.UserId)
-            ?? throw new NotFoundException(nameof(Customer), request.UserId);
+        var customer = _repo.Query<Customer>().FirstOrDefault(c => c.UserId == request.UserId)
+            ?? throw new NotFoundException(nameof(Customer));
 
         var order = new Order
         {
@@ -36,8 +34,8 @@ public class CreateOrderCommandHandler(
 
         foreach (var item in request.Products)
         {
-            var product = await _productRepo.GetByIdAsync(item.ProductId)
-                ?? throw new NotFoundException(nameof(Product), item.ProductId);
+            var product = await _repo.GetByIdAsync<Product>(item.ProductId)
+                ?? throw new NotFoundException(nameof(Product));
 
             var orderItem = new OrderItem()
             {
@@ -47,8 +45,8 @@ public class CreateOrderCommandHandler(
 
             foreach (var serviceId in item.AttachedServiceIds)
             {
-                var service = await _productRepo.GetByIdAsync(serviceId)
-                    ?? throw new NotFoundException("Service Product", serviceId);
+                var service = await _repo.GetByIdAsync<Product>(serviceId)
+                    ?? throw new NotFoundException(nameof(Product));
 
                 var serviceItem = new OrderItemService()
                 {
@@ -61,8 +59,8 @@ public class CreateOrderCommandHandler(
             order.OrderItems.Add(orderItem);
         }
 
-        await _orderRepo.AddAsync(order);
-        await _orderRepo.SaveChangesAsync();
+        await _repo.AddAsync(order);
+        await _repo.SaveChangesAsync();
 
         // Publicar eventos de domínio
         foreach (var orderItem in order.OrderItems)

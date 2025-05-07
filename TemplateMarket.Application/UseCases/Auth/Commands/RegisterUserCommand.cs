@@ -14,14 +14,14 @@ public record RegisterUserCommand(
 ) : IRequest<AuthResponse>;
 
 public class RegisterUserCommandHandler(
-    IRepository<User> _repository,
+    IRepository _repo,
     IMapper _mapper,
     IJwtTokenGenerator _tokenGenerator
 ) : IRequestHandler<RegisterUserCommand, AuthResponse>
 {
     public async Task<AuthResponse> Handle(RegisterUserCommand request, CancellationToken ct)
     {
-        if (await _repository.AnyAsync(u => u.Entity.Identification == request.identification))
+        if (_repo.Query<User>().Any(u => u.Entity.Identification == request.identification))
             throw new AlreadyExistsException(nameof(User));
 
         // Hash da senha fora da entidade
@@ -36,14 +36,14 @@ public class RegisterUserCommandHandler(
         user.PasswordHash = passwordHash;
         user.Entity = entity;
 
-        await _repository.AddAsync(user);
+        await _repo.AddAsync(user);
 
         var token = _tokenGenerator.GenerateToken(user);
 
-        await _repository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         user.AddDomainEvent(new CustomerCreatedDomainEvent(user.Id));
 
-        return new AuthResponse(user.Id, user.Email);
+        return new AuthResponse(user.Id, user.Email, token);
     }
 }

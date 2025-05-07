@@ -7,12 +7,12 @@ namespace TemplateMarket.Application.UseCases.Auth.Commands.ForgotPassword;
 public record ForgotPasswordCommand(string Email) : IRequest<Unit>;
 
 public class ForgotPasswordCommandHandler(
-    IRepository<User> _repository
+    IRepository _repo
 ) : IRequestHandler<ForgotPasswordCommand, Unit>
 {
     public async Task<Unit> Handle(ForgotPasswordCommand request, CancellationToken ct)
     {
-        var user = await _repository.SingleOrDefaultAsync(u => u.Email == request.Email);
+        var user = _repo.Query<User>().FirstOrDefault(u => u.Email == request.Email);
         if (user is not null)
         {
             var resetToken = Guid.NewGuid().ToString();
@@ -21,7 +21,7 @@ public class ForgotPasswordCommandHandler(
             user.ResetToken = resetToken;
             user.ResetTokenExpiresAt = resetTokenExpiresAt;
 
-            await _repository.SaveChangesAsync();
+            await _repo.SaveChangesAsync();
             // simulação de envio de e-mail
             Console.WriteLine($"Token para {user.Email}: {user.ResetToken}");
         }

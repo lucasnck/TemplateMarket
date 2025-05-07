@@ -1,5 +1,4 @@
 ﻿using TemplateMarket.Domain.Common.Entities;
-using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Domain.Entities;
 

@@ -15,8 +15,7 @@ public class CreateShowcaseCommand : IRequest<long>
 }
 
 public class CreateShowcaseCommandHandler(
-    IRepository<Showcase> _showcaseRepo,
-    IRepository<Product> _productRepo,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<CreateShowcaseCommand, long>
 {
@@ -28,7 +27,7 @@ public class CreateShowcaseCommandHandler(
 
         if (request.SKUs is not null && request.SKUs.Any())
         {
-            selectedProducts = (await _productRepo.FindAsync(p => request.SKUs.Contains(p.SKU))).ToList();
+            selectedProducts = _repo.Query<Product>().Where(p => request.SKUs.Contains(p.SKU)).ToList();
         }
 
         foreach (var product in selectedProducts)
@@ -40,8 +39,8 @@ public class CreateShowcaseCommandHandler(
             });
         }
 
-        await _showcaseRepo.AddAsync(showcase);
-        await _showcaseRepo.SaveChangesAsync();
+        await _repo.AddAsync(showcase);
+        await _repo.SaveChangesAsync();
 
         return showcase.Id;
     }

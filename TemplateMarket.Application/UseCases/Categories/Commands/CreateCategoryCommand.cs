@@ -11,20 +11,20 @@ public class CreateCategoryCommand : CreateCategoryDto, IRequest<long>
 }   
 
 public class CreateCategoryHandler(
-    IRepository<TemplateMarket.Domain.Entities.Category> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<CreateCategoryCommand, long>
 {
     public async Task<long> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var alreadyExists = (await _repository.FindAsync(t => t.Name == request.Name)).Any();
+        var alreadyExists = (_repo.Query<TemplateMarket.Domain.Entities.Category>().Any(t => t.Name == request.Name));
         if (alreadyExists)
             throw new AlreadyExistsException(nameof(Category));
 
         var entity = _mapper.Map<TemplateMarket.Domain.Entities.Category>(request);
 
-        await _repository.AddAsync(entity);
-        await _repository.SaveChangesAsync();
+        await _repo.AddAsync(entity);
+        await _repo.SaveChangesAsync();
 
         return entity.Id;
     }

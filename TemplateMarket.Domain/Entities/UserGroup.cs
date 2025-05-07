@@ -9,4 +9,6 @@ public class UserGroup : BaseEntity
 
     public long GroupId { get; set; }
     public virtual Group Group { get; set; }
+
+    public virtual ICollection<GroupRole> Roles { get; set; }
 }

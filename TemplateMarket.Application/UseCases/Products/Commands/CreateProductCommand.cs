@@ -12,20 +12,20 @@ public class CreateProductCommand : CreateProductDto, IRequest<long>
 }
 
 public class CreateProductCommandHandler(
-    IRepository<Product> _repository,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<CreateProductCommand, long>
 {
     public async Task<long> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        var alreadyExists = (await _repository.FindAsync(t => t.Name == request.Name)).Any();
+        var alreadyExists = _repo.Query<Product>().Any(t => t.Name == request.Name);
         if (alreadyExists)
             throw new AlreadyExistsException(nameof(Product));
 
         var entity = _mapper.Map<Product>(request);
 
-        await _repository.AddAsync(entity);
-        await _repository.SaveChangesAsync();
+        await _repo.AddAsync(entity);
+        await _repo.SaveChangesAsync();
 
         return entity.Id;
     }

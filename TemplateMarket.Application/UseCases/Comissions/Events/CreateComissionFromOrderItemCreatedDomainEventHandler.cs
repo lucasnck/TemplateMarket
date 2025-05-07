@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Domain.Enums;
@@ -8,16 +9,14 @@ using TemplateMarket.Domain.Events.OrderItem;
 namespace TemplateMarket.Application.UseCases.OrderItemServices.Events;
 
 public class CreateComissionFromOrderItemDomainEventHandler(
-    IRepository<OrderItem> _orderItemRepo,
-    IRepository<Commission> _commissionRepo
+    IRepository _repo
 ) : INotificationHandler<OrderItemCreatedDomainEvent>
 {
     public async Task Handle(OrderItemCreatedDomainEvent notification, CancellationToken ct)
     {
-        var orderItem = await _orderItemRepo.GetByIdAsync(notification.Id)
-            ?? throw new NotFoundException(nameof(OrderItem), notification.Id);
-        
-        if (orderItem.Product?.Partner == null)
+        var orderItem = await _repo.SingleOrThrow<OrderItem>(x => x.Id == notification.Id);
+
+        if (orderItem?.Product?.Partner == null)
             return;
 
         decimal percentualRepasse = GetPercentualRepasse(orderItem.Product.Partner?.Type);
@@ -33,8 +32,8 @@ public class CreateComissionFromOrderItemDomainEventHandler(
             OrderItem = orderItem,
         };
 
-        await _commissionRepo.AddAsync(commission);
-        await _commissionRepo.SaveChangesAsync();
+        await _repo.AddAsync(commission);
+        await _repo.SaveChangesAsync();
     }
 
     private decimal GetPercentualRepasse(PartnerType? partnerType)

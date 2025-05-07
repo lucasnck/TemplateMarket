@@ -124,18 +124,18 @@ builder.Services.AddScoped<CaptchaService>();
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IPermissionResolver, PermissionResolver>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 builder.Services.AddValidatorsFromAssembly(typeof(CreateProductCommandValidator).Assembly);
 
 builder.Services.AddAutoMapper(typeof(ProductMappingProfile).Assembly);
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IRepository), typeof(Repository));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthCommandEnricherBehavior<,>));
 
 builder.Services.AddScoped<IActiveProfileService, ActiveProfileService>();
-builder.Services.AddScoped<IUserSessionService, RedisUserSessionService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 var app = builder.Build();
 

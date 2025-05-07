@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
+using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.Auth.Commands.ChangePassword;
@@ -11,23 +13,20 @@ public record ChangePasswordCommand(string CurrentPassword, string NewPassword) 
 
 public class ChangePasswordCommandHandler(
     IHttpContextAccessor _httpContextAccessor,
-    IRepository<User> _repository
+    IActiveProfileService _activeProfile,
+    IRepository _repo
 ) : IRequestHandler<ChangePasswordCommand>
 {
     public async Task<Unit> Handle(ChangePasswordCommand request, CancellationToken ct)
     {
-        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId is null)
-            throw new UnauthorizedAccessException("Usuário não autenticado.");
-
-        var user = await _repository.GetByIdAsync(long.Parse(userId))
-                   ?? throw new NotFoundException("User", userId);
+        var user = await _repo.SingleOrThrow<User>(x => x.Id == _activeProfile.UserId)
+                   ?? throw new NotFoundException(nameof(User));
 
         if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash))
             throw new UnauthorizedAccessException("Senha atual incorreta.");
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-        await _repository.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return Unit.Value;
     }

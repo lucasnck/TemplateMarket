@@ -2,5 +2,6 @@
 
 public record AuthResponse(
     long UserId,
-    string Email
+    string Email,
+    string? Token
 );

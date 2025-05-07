@@ -10,13 +10,13 @@ namespace TemplateMarket.Application.UseCases.Showcases.Queries;
 public record GetShowcasesQuery() : IRequest<IEnumerable<ShowcaseResponse>>;
 
 public class GetShowcasesQueryHandler(
-    IRepository<Showcase> _showcaseRepo,
+    IRepository _repo,
     IMapper _mapper
 ) : IRequestHandler<GetShowcasesQuery, IEnumerable<ShowcaseResponse>>
 {
     public async Task<IEnumerable<ShowcaseResponse>> Handle(GetShowcasesQuery request, CancellationToken ct)
     {
-        var showcases = await _showcaseRepo.GetAllAsync();
+        var showcases = _repo.Query<Showcase>().AsEnumerable();
 
         return showcases.Select(x => new ShowcaseResponse
         {
