@@ -18,6 +18,7 @@ public class ActiveProfileService(
     public async Task<AvailableProfileResponse> GetCurrentProfile()
     {
         //var companyId = await _cacheService.GetValueAsync("active-profile:CompanyId");
+        var user = await _repo.GetByIdAsync<User>(UserId);
 
         var userCompanies = _repo.Query<UserCompany>().AsEnumerable();
 
@@ -26,10 +27,10 @@ public class ActiveProfileService(
 
         ActiveProfileResponse current = null;
 
+        List<ProfileResponse> profiles = [];
+
         if (userCompany == null)
         {
-            var user = await _repo.GetByIdAsync<User>(UserId);
-
             var userRoles = user.UserGroups
                 .SelectMany(ug => ug.Group.GroupRoles)
                 .Select(gr => gr.Role.Name)
@@ -58,16 +59,23 @@ public class ActiveProfileService(
                 userCompany.Company.Entity.CreatedDate,
                 userCompanyRoles
             );
+
+            profiles.Add(new ProfileResponse(
+                user.Entity.Name,
+                user.Entity.Identification,
+                user.Entity.Type.ToString(),
+                user.Entity.CreatedDate
+            ));
         }
 
-        var profiles = userCompanies
-            .Where(uc => uc.Id != UserId)
+        profiles.AddRange(userCompanies
+            .Where(uc => uc.Id == UserId)
             .Select(uc => new ProfileResponse(
                 uc.Company.Entity.Name,
                 uc.Company.Entity.Identification,
                 uc.Company.Entity.Type.ToString(),
                 uc.CreatedDate
-            ));
+            )));
 
         return new AvailableProfileResponse(profiles, current);
     }
