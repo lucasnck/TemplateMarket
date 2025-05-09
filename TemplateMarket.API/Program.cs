@@ -136,9 +136,11 @@ builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthCommandEnric
 
 builder.Services.AddScoped<IActiveProfileService, ActiveProfileService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IEmailNotification, EmailNotification>();
+builder.Services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+builder.Services.AddScoped<ActiveProfileValidationMiddleware>();
 
 var app = builder.Build();
-
 
 // CORS precisa vir antes de qualquer autenticação
 app.UseCors("AllowFrontend");
@@ -154,6 +156,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ActiveProfileValidationMiddleware>();
 
 
 app.MapControllers();

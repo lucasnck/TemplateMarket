@@ -10,15 +10,17 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(c => c.Id);
 
+            builder.HasIndex(c => c.Email)
+                .IsUnique();
             builder.Property(c => c.Email)
+                .IsRequired();
+
+            builder.Property(c => c.Phone)
                 .IsRequired();
 
             builder.Property(c => c.PasswordHash)
                 .IsRequired();
             
-            builder.Property(c => c.Role)
-                .IsRequired();
-
             builder.HasOne(x => x.Entity)
                 .WithMany()
                 .HasForeignKey(x => x.EntityId)

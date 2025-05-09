@@ -10,6 +10,12 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Email)
+            .IsRequired();
+
+        builder.Property(x => x.Phone)
+            .IsRequired();
+
         builder.HasOne(x => x.Entity)
             .WithMany()
             .HasForeignKey(x => x.EntityId)

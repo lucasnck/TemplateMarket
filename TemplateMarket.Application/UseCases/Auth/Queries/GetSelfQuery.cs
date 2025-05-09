@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Application.Responses;
@@ -10,17 +11,14 @@ public record GetSelfQuery : IRequest<AuthResponse>;
 
 public class GetSelfQueryHandler(
     IActiveProfileService _activeProfile,
-    IRepository _repo
+    IRepository _repo,
+    IMapper _mapper
 ) : IRequestHandler<GetSelfQuery, AuthResponse>
 {
     public async Task<AuthResponse> Handle(GetSelfQuery request, CancellationToken ct)
     {
-        var user = await _repo.GetByIdAsync<User>(_activeProfile.UserId);
+        var user = await _activeProfile.GetUser();
 
-        return new AuthResponse(
-            _activeProfile.UserId,
-            user.Email,
-            null
-        );
+        return _mapper.Map<AuthResponse>(user);
     }
 }

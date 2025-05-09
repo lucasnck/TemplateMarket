@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Infrastructure.Persistence.Configurations
@@ -14,6 +13,8 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Name)
                 .IsRequired();
 
+            builder.HasIndex(x => x.Email)
+                .IsUnique();
             builder.Property(x => x.Email)
                 .IsRequired();
 
@@ -21,18 +22,18 @@ namespace TemplateMarket.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.HasOne(x => x.Entity)
-                .WithMany()
-                .HasForeignKey(x => x.EntityId)
+                .WithOne()
+                .HasForeignKey<Customer>(x => x.EntityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.User)
-                .WithMany()
-                .HasForeignKey(x => x.UserId)
+                .WithOne()
+                .HasForeignKey<Customer>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Company)
-                .WithMany()
-                .HasForeignKey(x => x.CompanyId)
+                .WithOne()
+                .HasForeignKey<Customer>(x => x.CompanyId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

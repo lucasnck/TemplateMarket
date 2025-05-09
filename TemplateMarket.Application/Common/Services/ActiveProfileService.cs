@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Application.Responses;
@@ -17,8 +19,7 @@ public class ActiveProfileService(
 
     public async Task<AvailableProfileResponse> GetCurrentProfile()
     {
-        //var companyId = await _cacheService.GetValueAsync("active-profile:CompanyId");
-        var user = await _repo.GetByIdAsync<User>(UserId);
+        var user = await GetUser();
 
         var userCompanies = _repo.Query<UserCompany>().AsEnumerable();
 
@@ -80,13 +81,17 @@ public class ActiveProfileService(
         return new AvailableProfileResponse(profiles, current);
     }
 
-    public async Task SetActiveProfile(long? CompanyId)
+    public async Task<User> GetUser()
+        => await _repo.SingleOrThrow<User>(x => x.Id == UserId)
+                   ?? throw new NotFoundException(nameof(User));
+
+    public void SetActiveProfile(string? companyIdentification)
     {
         var userCompanies = _repo.Query<UserCompany>().Where(x => x.UserId == UserId);
 
         foreach (var uc in userCompanies)
         {
-            uc.IsActive = (CompanyId != null && uc.CompanyId == CompanyId);
+            uc.IsActive = (companyIdentification != null && uc.Company.Entity.Identification == companyIdentification);
         }
     }
 }

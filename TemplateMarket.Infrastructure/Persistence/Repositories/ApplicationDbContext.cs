@@ -10,12 +10,15 @@ namespace TemplateMarket.Infrastructure.Persistence;
 public class ApplicationDbContext : DbContext
 {
     private IMediator _mediator;
+    private readonly IDomainEventDispatcher _dispatcher;
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        IMediator mediator
+        IMediator mediator, 
+        IDomainEventDispatcher dispatcher
     ) : base(options) {
         _mediator = mediator;
+        _dispatcher = dispatcher;
     }
 
     // DbSets para as entidades
@@ -69,20 +72,7 @@ public class ApplicationDbContext : DbContext
     {
         var utcNow = DateTime.UtcNow;
 
-        // 1. Encontra entidades com eventos
-        var domainEntities = ChangeTracker
-            .Entries<BaseEntity>()
-            .Where(e => e.Entity.DomainEvents.Any())
-            .ToList();
-
-        // 2. Coleta todos os eventos
-        var domainEvents = domainEntities
-            .SelectMany(e => e.Entity.DomainEvents)
-            .ToList();
-
-        // 3. Limpa eventos das entidades
-        domainEntities.ForEach(e => e.Entity.ClearDomainEvents());
-
+        // 1. Atualiza timestamps
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
             if (entry.State == EntityState.Added)
@@ -92,13 +82,21 @@ public class ApplicationDbContext : DbContext
                 entry.Entity.UpdatedDate = utcNow;
         }
 
+        // 2. Coleta entidades com eventos ANTES do save
+        var domainEntities = ChangeTracker
+            .Entries<BaseEntity>()
+            .Where(e => e.Entity.DomainEvents.Any())
+            .Select(e => e.Entity)
+            .ToList();
+
+        // 3. Salva no banco (agora os IDs são populados)
         var result = await base.SaveChangesAsync(cancellationToken);
 
-        // 5. Publica os eventos
-        foreach (var domainEvent in domainEvents)
-        {
-            await _mediator.Publish(domainEvent, cancellationToken);
-        }
+        // 4. Dispara os eventos AGORA que os dados estão completos
+        await _dispatcher.DispatchEventsAsync(domainEntities, cancellationToken);
+
+        // 5. Limpa eventos (boa prática)
+        domainEntities.ForEach(e => e.ClearDomainEvents());
 
         return result;
     }

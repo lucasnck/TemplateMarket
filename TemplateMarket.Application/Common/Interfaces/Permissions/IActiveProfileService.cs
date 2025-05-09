@@ -1,4 +1,5 @@
 ﻿using TemplateMarket.Application.Responses;
+using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.Common.Interfaces.Permissions;
 
@@ -6,7 +7,9 @@ public interface IActiveProfileService
 {
     long UserId { get; }
 
+    Task<User> GetUser();
+
     Task<AvailableProfileResponse> GetCurrentProfile();
 
-    Task SetActiveProfile(long? CompanyId);
+    void SetActiveProfile(string? companyIdentification);
 }

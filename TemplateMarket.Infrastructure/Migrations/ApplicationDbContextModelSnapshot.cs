@@ -127,11 +127,19 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<long>("EntityId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("OwnerUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -182,11 +190,17 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyId")
+                        .IsUnique();
 
-                    b.HasIndex("EntityId");
+                    b.HasIndex("Email")
+                        .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("EntityId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Customers");
                 });
@@ -204,23 +218,23 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.Property<string>("Identification")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Identification")
+                        .IsUnique();
 
                     b.ToTable("Entities");
                 });
@@ -733,10 +747,23 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("EmailVerificationToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("EmailVerificationTokenExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<long>("EntityId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -746,14 +773,13 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<DateTime?>("ResetTokenExpiresAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("EntityId");
 
@@ -999,19 +1025,19 @@ namespace TemplateMarket.Infrastructure.Migrations
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Customer", b =>
                 {
                     b.HasOne("TemplateMarket.Domain.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.Customer", "CompanyId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TemplateMarket.Domain.Entities.Entity", "Entity")
-                        .WithMany()
-                        .HasForeignKey("EntityId")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.Customer", "EntityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TemplateMarket.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.Customer", "UserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Company");

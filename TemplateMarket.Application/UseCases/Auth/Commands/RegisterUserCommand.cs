@@ -10,6 +10,7 @@ public record RegisterUserCommand(
     string identification,
     string Name,
     string Email,
+    string Phone,
     string Password
 ) : IRequest<AuthResponse>;
 
@@ -32,18 +33,23 @@ public class RegisterUserCommandHandler(
         entity.Type = TemplateMarket.Domain.Enums.EntityType.Individual;
 
         var user = _mapper.Map<User>(request);
-        user.Role = "Customer";
         user.PasswordHash = passwordHash;
         user.Entity = entity;
+        
+        // Gere um token de verificação único (simples)
+        user.EmailVerificationToken = Guid.NewGuid().ToString();
+        user.EmailVerificationTokenExpiresAt = DateTime.UtcNow.AddHours(24); // expira em 24h
 
         await _repo.AddAsync(user);
 
         var token = _tokenGenerator.GenerateToken(user);
 
+        user.AddDomainEvent(new UserCreatedDomainEvent(user));
         await _repo.SaveChangesAsync();
 
-        user.AddDomainEvent(new CustomerCreatedDomainEvent(user.Id));
+        var response = _mapper.Map<AuthResponse>(user);
+        response.Token = token;
 
-        return new AuthResponse(user.Id, user.Email, token);
+        return response;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
+using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.UseCases.Auth.Commands.ForgotPassword;
 
@@ -22,8 +23,8 @@ public class ForgotPasswordCommandHandler(
             user.ResetTokenExpiresAt = resetTokenExpiresAt;
 
             await _repo.SaveChangesAsync();
-            // simulação de envio de e-mail
-            Console.WriteLine($"Token para {user.Email}: {user.ResetToken}");
+
+            user.AddDomainEvent(new UserResetTokenDomainEvent(user.Id));
         }
 
         return Unit.Value;

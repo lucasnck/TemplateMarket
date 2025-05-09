@@ -11,16 +11,15 @@ public class EntityConfiguration : IEntityTypeConfiguration<Entity>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name)
-            .HasMaxLength(200)
             .IsRequired();
 
+        builder.HasIndex(c => c.Identification)
+            .IsUnique();
         builder.Property(x => x.Identification)
-            .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(x => x.Type)
             .HasConversion<string>()
-            .HasMaxLength(20)
             .IsRequired();
     }
 }
