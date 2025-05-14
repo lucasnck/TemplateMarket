@@ -46,6 +46,15 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserCompanyGroup> UserCompanyGroups { get; set; }
     public DbSet<UserGroupTemplate> UserGroupTemplates { get; set; }
 
+    public DbSet<Workflow> Workflow { get; set; }
+    public DbSet<Processor> Processor { get; set; }
+    public DbSet<ProcessorOutput> ProcessorOutput { get; set; }
+    public DbSet<ProcessorStep> ProcessorStep { get; set; }
+    public DbSet<WorkflowItem> WorkflowItem { get; set; }
+    public DbSet<WorkflowItemProcessor> WorkflowItemProcessor { get; set; }
+    public DbSet<WorkflowItemProcessorStep> WorkflowItemProcessorStep { get; set; }
+
+
     // Adicione mais DbSets conforme você for criando mais entidades no futuro
     // public DbSet<OutraEntidade> OutraEntidade { get; set; }
 

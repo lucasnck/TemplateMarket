@@ -25,6 +25,21 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ProcessorProcessorStep", b =>
+                {
+                    b.Property<long>("ProcessorStepsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProcessorsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ProcessorStepsId", "ProcessorsId");
+
+                    b.HasIndex("ProcessorsId");
+
+                    b.ToTable("ProcessorProcessorStep");
+                });
+
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Category", b =>
                 {
                     b.Property<long>("Id")
@@ -483,6 +498,115 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Platforms");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Processor", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CommandName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommandName")
+                        .IsUnique();
+
+                    b.ToTable("Processor");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ProcessorOutput", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("ConnectedProcessorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ConnectedProcessorId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsFinal")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConnectedProcessorId");
+
+                    b.HasIndex("ConnectedProcessorId1");
+
+                    b.ToTable("ProcessorOutput");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ProcessorStep", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("WorkflowId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("WorkflowId1")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkflowId");
+
+                    b.HasIndex("WorkflowId1");
+
+                    b.ToTable("ProcessorStep");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Product", b =>
@@ -965,6 +1089,213 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.ToTable("WorkOrders");
                 });
 
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Workflow", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Workflow");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("Productd")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("WorkOrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("WorkflowId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.HasIndex("WorkflowId");
+
+                    b.ToTable("WorkflowItem");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItemProcessor", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ProcessorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProcessorOutputId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("WorkflowItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("WorkflowItemProcessorStepId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkflowItemProcessorStepId");
+
+                    b.ToTable("WorkflowItemProcessor");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItemProcessorStep", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("WorkflowItemId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkflowItemId");
+
+                    b.ToTable("WorkflowItemProcessorStep");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowStatus", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("ProcessorStepId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("WorkflowId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessorStepId");
+
+                    b.HasIndex("WorkflowId");
+
+                    b.ToTable("WorkflowStatus");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowView", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ViewName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("WorkflowStatusId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkflowStatusId");
+
+                    b.ToTable("WorkflowView");
+                });
+
+            modelBuilder.Entity("ProcessorProcessorStep", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.ProcessorStep", null)
+                        .WithMany()
+                        .HasForeignKey("ProcessorStepsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Processor", null)
+                        .WithMany()
+                        .HasForeignKey("ProcessorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Category", b =>
                 {
                     b.HasOne("TemplateMarket.Domain.Entities.Platform", "Platform")
@@ -1140,6 +1471,37 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ProcessorOutput", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Processor", null)
+                        .WithMany("ProcessorOutputs")
+                        .HasForeignKey("ConnectedProcessorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Processor", "ConnectedProcessor")
+                        .WithMany()
+                        .HasForeignKey("ConnectedProcessorId1");
+
+                    b.Navigation("ConnectedProcessor");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.ProcessorStep", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Workflow", null)
+                        .WithMany("ProcessorSteps")
+                        .HasForeignKey("WorkflowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Workflow", "Workflow")
+                        .WithMany()
+                        .HasForeignKey("WorkflowId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Workflow");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Product", b =>
@@ -1357,6 +1719,95 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Navigation("OrderItemService");
                 });
 
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItem", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("TemplateMarket.Domain.Entities.WorkOrder", "WorkItem")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderId");
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Workflow", null)
+                        .WithMany("WorkflowItems")
+                        .HasForeignKey("WorkflowId");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("WorkItem");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItemProcessor", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Processor", "Processor")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.ProcessorOutput", "ProcessorOutput")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.WorkflowItem", "WorkflowItem")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.WorkflowItemProcessorStep", null)
+                        .WithMany("WorkflowItemProcessors")
+                        .HasForeignKey("WorkflowItemProcessorStepId");
+
+                    b.Navigation("Processor");
+
+                    b.Navigation("ProcessorOutput");
+
+                    b.Navigation("WorkflowItem");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItemProcessorStep", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.WorkflowItem", "WorkflowItem")
+                        .WithMany("WorkflowItemProcessorSteps")
+                        .HasForeignKey("WorkflowItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkflowItem");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowStatus", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.ProcessorStep", "ProcessorStep")
+                        .WithMany()
+                        .HasForeignKey("ProcessorStepId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Workflow", null)
+                        .WithMany("WorkflowStatus")
+                        .HasForeignKey("WorkflowId");
+
+                    b.Navigation("ProcessorStep");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowView", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.WorkflowStatus", null)
+                        .WithMany("WorkflowViews")
+                        .HasForeignKey("WorkflowStatusId");
+                });
+
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
@@ -1398,6 +1849,11 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Navigation("WorkOrders");
                 });
 
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Processor", b =>
+                {
+                    b.Navigation("ProcessorOutputs");
+                });
+
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductCategories");
@@ -1428,6 +1884,30 @@ namespace TemplateMarket.Infrastructure.Migrations
             modelBuilder.Entity("TemplateMarket.Domain.Entities.UserGroup", b =>
                 {
                     b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Workflow", b =>
+                {
+                    b.Navigation("ProcessorSteps");
+
+                    b.Navigation("WorkflowItems");
+
+                    b.Navigation("WorkflowStatus");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItem", b =>
+                {
+                    b.Navigation("WorkflowItemProcessorSteps");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowItemProcessorStep", b =>
+                {
+                    b.Navigation("WorkflowItemProcessors");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkflowStatus", b =>
+                {
+                    b.Navigation("WorkflowViews");
                 });
 #pragma warning restore 612, 618
         }
