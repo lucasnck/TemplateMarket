@@ -34,6 +34,9 @@
   <ItemGroup>
     <Folder Include="Common\Models\" />
     <Folder Include="UseCases\Orders\Events\" />
+    <Folder Include="UseCases\UserCompanies\Events\" />
+    <Folder Include="UseCases\UserCompanies\Validators\" />
+    <Folder Include="UseCases\UserCompanies\Queries\" />
   </ItemGroup>
 
 </Project>

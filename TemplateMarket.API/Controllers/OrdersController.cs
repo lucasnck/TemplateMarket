@@ -7,7 +7,7 @@ namespace TemplateMarket.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class OrderController(IMediator _mediator) : ControllerBase
+public class OrdersController(IMediator _mediator) : ControllerBase
 { 
     [Authorize(Roles = "Customer")]
     [HttpPost]

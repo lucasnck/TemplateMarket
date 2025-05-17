@@ -8,11 +8,11 @@ namespace TemplateMarket.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PlatformController : ControllerBase
+public class PlatformsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public PlatformController(IMediator mediator)
+    public PlatformsController(IMediator mediator)
     {
         _mediator = mediator;
     }

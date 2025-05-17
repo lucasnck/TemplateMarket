@@ -7,11 +7,11 @@ namespace TemplateMarket.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoryController : ControllerBase
+public class CategoriesController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public CategoryController(IMediator mediator)
+    public CategoriesController(IMediator mediator)
     {
         _mediator = mediator;
     }

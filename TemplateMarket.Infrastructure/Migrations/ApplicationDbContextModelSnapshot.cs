@@ -921,6 +921,9 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<long>("CompanyId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("CompanyId1")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -938,6 +941,8 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.HasIndex("CompanyId")
                         .IsUnique();
 
+                    b.HasIndex("CompanyId1");
+
                     b.HasIndex("UserId")
                         .IsUnique();
 
@@ -952,7 +957,7 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CompanyId")
+                    b.Property<long?>("CompanyId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedDate")
@@ -964,10 +969,10 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long?>("UserCompanyId")
+                    b.Property<long>("UserCompanyId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -980,7 +985,7 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserCompanyGroups", (string)null);
+                    b.ToTable("UserCompanyGroups");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.UserGroup", b =>
@@ -1009,7 +1014,7 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserGroups", (string)null);
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.UserGroupTemplate", b =>
@@ -1037,7 +1042,7 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("UserGroupTemplates", (string)null);
+                    b.ToTable("UserGroupTemplates");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkOrder", b =>
@@ -1131,9 +1136,6 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<long?>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("Productd")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -1619,6 +1621,10 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TemplateMarket.Domain.Entities.Company", null)
+                        .WithMany("UserCompanies")
+                        .HasForeignKey("CompanyId1");
+
                     b.HasOne("TemplateMarket.Domain.Entities.User", "User")
                         .WithOne()
                         .HasForeignKey("TemplateMarket.Domain.Entities.UserCompany", "UserId")
@@ -1632,11 +1638,9 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.UserCompanyGroup", b =>
                 {
-                    b.HasOne("TemplateMarket.Domain.Entities.Company", "Company")
+                    b.HasOne("TemplateMarket.Domain.Entities.Company", null)
                         .WithMany("UserCompanyGroups")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyId");
 
                     b.HasOne("TemplateMarket.Domain.Entities.Group", "Group")
                         .WithMany()
@@ -1644,21 +1648,19 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TemplateMarket.Domain.Entities.UserCompany", null)
+                    b.HasOne("TemplateMarket.Domain.Entities.UserCompany", "UserCompany")
                         .WithMany("UserCompanyGroups")
-                        .HasForeignKey("UserCompanyId");
-
-                    b.HasOne("TemplateMarket.Domain.Entities.User", "User")
-                        .WithMany("UserCompanyGroups")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserCompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.HasOne("TemplateMarket.Domain.Entities.User", null)
+                        .WithMany("UserCompanyGroups")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Group");
 
-                    b.Navigation("User");
+                    b.Navigation("UserCompany");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.UserGroup", b =>
@@ -1815,6 +1817,8 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Company", b =>
                 {
+                    b.Navigation("UserCompanies");
+
                     b.Navigation("UserCompanyGroups");
                 });
 

@@ -8,7 +8,6 @@ public class UserGroupTemplateConfiguration : IEntityTypeConfiguration<UserGroup
 {
     public void Configure(EntityTypeBuilder<UserGroupTemplate> builder)
     {
-        builder.ToTable("UserGroupTemplates");
         builder.HasKey(ugt => ugt.Id);
 
         builder.HasOne(ugt => ugt.Group)

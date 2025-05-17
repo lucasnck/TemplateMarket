@@ -8,17 +8,11 @@ public class UserCompanyGroupConfiguration : IEntityTypeConfiguration<UserCompan
 {
     public void Configure(EntityTypeBuilder<UserCompanyGroup> builder)
     {
-        builder.ToTable("UserCompanyGroups");
         builder.HasKey(ucg => ucg.Id);
 
-        builder.HasOne(ucg => ucg.User)
+        builder.HasOne(ucg => ucg.UserCompany)
             .WithMany(u => u.UserCompanyGroups)
-            .HasForeignKey(ucg => ucg.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(ucg => ucg.Company)
-            .WithMany(c => c.UserCompanyGroups)
-            .HasForeignKey(ucg => ucg.CompanyId)
+            .HasForeignKey(ucg => ucg.UserCompanyId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(ucg => ucg.Group)

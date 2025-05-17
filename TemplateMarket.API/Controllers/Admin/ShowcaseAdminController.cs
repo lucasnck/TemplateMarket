@@ -5,7 +5,7 @@ using TemplateMarket.Application.UseCases.Showcases.Queries;
 
 namespace TemplateMarket.API.Controllers.Admin;
 
-[Route("api/admin/showcases")]
+[Route("api/admin/[controller]")]
 [ApiController]
 public class ShowcaseAdminController(IMediator _mediator) : ControllerBase
 {
