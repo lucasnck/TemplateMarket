@@ -262,6 +262,9 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long?>("CompanyId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -276,6 +279,8 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Groups", (string)null);
                 });
@@ -1378,6 +1383,15 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Navigation("Entity");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Group", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.GroupRole", b =>
