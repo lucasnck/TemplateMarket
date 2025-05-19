@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.UseCases.Groups.Dtos;
@@ -22,11 +20,19 @@ public class UpdateGroupCommandHandler(
     {
         var entity = await _repo.SingleOrThrow<Group>(g => g.Id == request.Id);
 
-        entity = _mapper.Map<Group>(request);
+        _mapper.Map(request, entity);
+
         var roles = _repo.Query<Role>().Where(r => request.RoleIds.Contains(r.Id))
             .ToList();
 
-        foreach (var role in roles)
+        var currentRoleIds = entity.GroupRoles?.Select(gr => gr.RoleId).ToList() ?? [];
+
+        // Identifica roles a adicionar
+        var rolesToAdd = roles
+            .Where(r => !currentRoleIds.Contains(r.Id))
+            .ToList();
+
+        foreach (var role in rolesToAdd)
         {
             var groupRole = new GroupRole()
             {
@@ -35,6 +41,15 @@ public class UpdateGroupCommandHandler(
             };
 
             await _repo.AddAsync(groupRole);
+        }
+
+        var rolesToRemove = entity.GroupRoles?
+            .Where(gr => !request.RoleIds.Contains(gr.RoleId))
+            .ToList() ?? [];
+
+        foreach (var groupRole in rolesToRemove)
+        {
+            _repo.Remove(groupRole);
         }
 
         await _repo.UpdateAsync(entity);

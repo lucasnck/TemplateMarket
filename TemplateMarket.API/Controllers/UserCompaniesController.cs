@@ -4,8 +4,7 @@ using TemplateMarket.Application.UseCases.UserCompanies.Commands;
 
 namespace TemplateMarket.API.Controllers;
 
-
-[Route("api/user-company")]
+[Route("api/admin/[controller]")]
 [ApiController]
 public class UserCompaniesController(IMediator _mediator) : ControllerBase
 {
