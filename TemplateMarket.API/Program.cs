@@ -18,13 +18,6 @@ using TemplateMarket.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ApiExceptionFilter>();
-});
-
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
@@ -68,11 +61,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowCredentials();
     });
-});
-
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ResultResponseFilter>();
 });
 
 // Registra os handlers do MediatR
@@ -135,10 +123,18 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthCommandEnricherBehavior<,>));
 
 builder.Services.AddScoped<IActiveProfileService, ActiveProfileService>();
+builder.Services.AddScoped<RoleFilter>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IEmailNotification, EmailNotification>();
 builder.Services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 builder.Services.AddScoped<ActiveProfileValidationMiddleware>();
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiExceptionFilter>();
+    options.Filters.Add<ResultResponseFilter>();
+    options.Filters.Add<RoleFilter>();
+});
 
 var app = builder.Build();
 
