@@ -19,4 +19,10 @@ public static class Roles
         public const string Update = "role:update";
         public const string Read = "role:read";
     }
+
+    public static class UserGroup
+    {
+        public const string Update = "user-group:update";
+        public const string Read = "user-group:read";
+    }
 }

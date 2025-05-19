@@ -6,15 +6,15 @@ using TemplateMarket.Domain.Entities;
 
 namespace TemplateMarket.Application.UseCases.UserGroups.Commands;
 
-public class CreateUserGroupCommand : UserGroupDto, IRequest<long>
+public class UpdateUserGroupCommand : UserGroupDto, IRequest<long>
 {
 }
 
-public class CreateUserGroupCommandHandler(
+public class UpdateUserGroupCommandHandler(
     IRepository _repo
-) : IRequestHandler<CreateUserGroupCommand, long>
+) : IRequestHandler<UpdateUserGroupCommand, long>
 {
-    public async Task<long> Handle(CreateUserGroupCommand request, CancellationToken cancellationToken)
+    public async Task<long> Handle(UpdateUserGroupCommand request, CancellationToken cancellationToken)
     {
         var user = await _repo.SingleOrThrow<User>(u => u.Id == request.UserId);
 
