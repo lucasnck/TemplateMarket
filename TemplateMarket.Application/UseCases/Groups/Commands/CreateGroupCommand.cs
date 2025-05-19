@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using TemplateMarket.Application.Common.Extensions;
+using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.UseCases.Groups.Dtos;
 using TemplateMarket.Domain.Entities;
@@ -18,10 +18,10 @@ public class CreateGroupCommandHandler(
 {
     public async Task<long> Handle(CreateGroupCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repo.SingleOrThrow<Group>(g => g.Name == request.Name);
+        var entity = _repo.Query<Group>().FirstOrDefault(g => g.Name == request.Name);
+        if (entity != null) throw new AlreadExistsException(request.Name);
 
         entity = _mapper.Map<Group>(request);
-
         var roles = _repo.Query<Role>().Where(r => request.RoleIds.Contains(r.Id))
             .ToList();
 
