@@ -2,5 +2,5 @@
 
 public interface IGroupTemplateService
 {
-    List<long> GetGroupIdsForTemplateAsync(string templateKey);
+    IEnumerable<long> GetGroupIdsForTemplateAsync(string templateKey);
 }

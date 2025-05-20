@@ -25,6 +25,21 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("GroupGroupTemplate", b =>
+                {
+                    b.Property<long>("GroupTemplatesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GroupsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("GroupTemplatesId", "GroupsId");
+
+                    b.HasIndex("GroupsId");
+
+                    b.ToTable("GroupGroupTemplate");
+                });
+
             modelBuilder.Entity("ProcessorProcessorStep", b =>
                 {
                     b.Property<long>("ProcessorStepsId")
@@ -317,6 +332,29 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.HasIndex("UserGroupId");
 
                     b.ToTable("GroupRoles", (string)null);
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.GroupTemplate", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TemplateKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupTemplates");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Order", b =>
@@ -1022,34 +1060,6 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.ToTable("UserGroups");
                 });
 
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.UserGroupTemplate", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("TemplateKey")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("UserGroupTemplates");
-                });
-
             modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkOrder", b =>
                 {
                     b.Property<long>("Id")
@@ -1286,6 +1296,21 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.HasIndex("WorkflowStatusId");
 
                     b.ToTable("WorkflowView");
+                });
+
+            modelBuilder.Entity("GroupGroupTemplate", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.GroupTemplate", null)
+                        .WithMany()
+                        .HasForeignKey("GroupTemplatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProcessorProcessorStep", b =>
@@ -1694,17 +1719,6 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Navigation("Group");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TemplateMarket.Domain.Entities.UserGroupTemplate", b =>
-                {
-                    b.HasOne("TemplateMarket.Domain.Entities.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.WorkOrder", b =>

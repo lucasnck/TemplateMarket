@@ -1,13 +1,15 @@
 ﻿using MediatR;
 using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
+using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Domain.Events.OrderItem;
 
 namespace TemplateMarket.Application.UseCases.UserCompanies.EventHandlers;
 
 public class CreateUserCompanyGroupFromCreatedUserCompanyEventHandler(
-    IRepository _repo
+    IRepository _repo,
+    IGroupTemplateService _groupTemplateService
 ) : INotificationHandler<UserCompanyOwnerCreatedDomainEvent>
 {
     public async Task Handle(UserCompanyOwnerCreatedDomainEvent notification, CancellationToken cancellationToken)
@@ -19,16 +21,14 @@ public class CreateUserCompanyGroupFromCreatedUserCompanyEventHandler(
 
         var templateKey = "UserComapnyGroupOwner";
 
-        var templates = _repo.Query<UserGroupTemplate>()
-            .Where(ugt => ugt.TemplateKey == templateKey)
-            .ToList();
+        var groupIds = _groupTemplateService.GetGroupIdsForTemplateAsync(templateKey);
 
-        foreach (var template in templates)
+        foreach (var groupId in groupIds)
         {
-            var userCompanyGroup = new UserCompanyGroup()
+            var userCompanyGroup = new TemplateMarket.Domain.Entities.UserCompanyGroup()
             {
                 UserCompany = userCompany,
-                Group = template.Group,
+                GroupId = groupId,
             };
 
             await _repo.AddAsync(userCompanyGroup);

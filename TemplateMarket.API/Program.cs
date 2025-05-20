@@ -128,6 +128,7 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IEmailNotification, EmailNotification>();
 builder.Services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 builder.Services.AddScoped<ActiveProfileValidationMiddleware>();
+builder.Services.AddScoped<IGroupTemplateService, GroupTemplateService>();
 
 builder.Services.AddControllers(options =>
 {

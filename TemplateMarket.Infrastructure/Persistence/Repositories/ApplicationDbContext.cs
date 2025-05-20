@@ -44,7 +44,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<GroupRole> GroupRoles { get; set; }
     public DbSet<UserGroup> UserGroups { get; set; }
     public DbSet<UserCompanyGroup> UserCompanyGroups { get; set; }
-    public DbSet<UserGroupTemplate> UserGroupTemplates { get; set; }
+    public DbSet<GroupTemplate> GroupTemplates { get; set; }
 
     public DbSet<Workflow> Workflow { get; set; }
     public DbSet<Processor> Processor { get; set; }

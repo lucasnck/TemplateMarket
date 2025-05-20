@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TemplateMarket.API.Attributes;
 using TemplateMarket.Application.UseCases.UserCompanies.Commands;
+using TemplateMarket.Domain.Roles;
 
 namespace TemplateMarket.API.Controllers;
 
@@ -8,7 +11,8 @@ namespace TemplateMarket.API.Controllers;
 [ApiController]
 public class UserCompaniesController(IMediator _mediator) : ControllerBase
 {
-
+    [Authorize]
+    [RoleFilter(Roles.UserCompany.Update)]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserCompanyOwnerCommand command)
         => Ok(await _mediator.Send(command));

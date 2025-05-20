@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TemplateMarket.API.Attributes;
 using TemplateMarket.Application.UseCases.Groups.Commands;
-using TemplateMarket.Domain.Roles;
 
 namespace TemplateMarket.API.Controllers.Admin;
 
