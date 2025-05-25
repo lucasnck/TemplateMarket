@@ -989,7 +989,7 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserCompany");
+                    b.ToTable("UserCompanies");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.UserCompanyGroup", b =>

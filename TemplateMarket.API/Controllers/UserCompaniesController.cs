@@ -12,7 +12,7 @@ namespace TemplateMarket.API.Controllers;
 public class UserCompaniesController(IMediator _mediator) : ControllerBase
 {
     [Authorize]
-    [RoleFilter(Roles.UserCompany.Update)]
+    //[RoleFilter(Roles.UserCompany.Update)]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserCompanyOwnerCommand command)
         => Ok(await _mediator.Send(command));

@@ -15,8 +15,7 @@ public class CreateUserCompanyOwnerCommand : CreateUserCompanyOwnerDto, IRequest
 
 public class CreateUserCompanyCommandHandler(
     IRepository _repo,
-    IActiveProfileService _activeProfileService,
-    IMapper _mapper
+    IActiveProfileService _activeProfileService
 ) : IRequestHandler<CreateUserCompanyOwnerCommand, long>
 {
     public async Task<long> Handle(CreateUserCompanyOwnerCommand request, CancellationToken cancellationToken)
@@ -25,12 +24,24 @@ public class CreateUserCompanyCommandHandler(
             .Any(uc => uc.Company.Entity.Identification == request.Identification);
 
         if (alreadyExists)
-            throw new AlreadyExistsException(nameof(Category));
+            throw new AlreadyExistsException(nameof(UserCompany));
 
         var user = await _activeProfileService.GetUser();
         var entity = ResolveEntity(request);
         var company = ResolveCompany(request, entity, user);
+        var userCompany = ResolveUserCompany(company, user);
 
+        userCompany.AddDomainEvent(new UserCompanyOwnerCreatedDomainEvent(userCompany));
+
+
+        await _repo.SaveChangesAsync();
+
+
+        return entity.Id;
+    }
+
+    private UserCompany ResolveUserCompany(Company company, User user)
+    {
         var userCompany = new UserCompany()
         {
             IsActive = true,
@@ -38,12 +49,9 @@ public class CreateUserCompanyCommandHandler(
             User = user
         };
 
-        await _repo.AddAsync(entity);
-        await _repo.SaveChangesAsync();
+        _repo.AddAsync(userCompany);
 
-        user.AddDomainEvent(new UserCompanyOwnerCreatedDomainEvent(userCompany.Id));
-
-        return entity.Id;
+        return userCompany;
     }
 
     private Company ResolveCompany(CreateUserCompanyOwnerCommand request, Entity entity, User user)
