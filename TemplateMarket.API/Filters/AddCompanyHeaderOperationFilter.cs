@@ -21,7 +21,7 @@ public class AddCompanyHeaderOperationFilter : IOperationFilter
         {
             Name = "x-auth-company",
             In = ParameterLocation.Header,
-            Required = true, // ou false, se for opcional
+            Required = false, // ou false, se for opcional
             Schema = new OpenApiSchema
             {
                 Type = "string"

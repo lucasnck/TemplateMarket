@@ -8,7 +8,7 @@ namespace TemplateMarket.API.Controllers.Admin;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AdminShowcaseAdminController(IMediator _mediator) : ControllerBase
+public class AdminShowcaseController(IMediator _mediator) : ControllerBase
 {
     [Authorize]
     //[RoleFilter(Roles.Showcase.Update)]

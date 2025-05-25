@@ -4,6 +4,7 @@ using TemplateMarket.Application.Responses;
 using TemplateMarket.Application.UseCases.Categories.Commands;
 using TemplateMarket.Application.UseCases.Category.Dtos;
 using TemplateMarket.Domain.Entities;
+using TemplateMarket.Domain.Enums;
 
 namespace TemplateMarket.Application.Mappings;
 
@@ -11,8 +12,15 @@ public class CategoryMappingProfile : Profile
 {
     public CategoryMappingProfile()
     {
-        CreateMap<Category, CategoryResponse>().ReverseMap();
-        CreateMap<CreateCategoryDto, Category>();
+        CreateMap<Category, CategoryResponse>()
+            .ReverseMap();
+
+        CreateMap<CreateCategoryDto, Category>()
+            .ForNullableBool(d => d.IsActive)
+            .ApplyBaseUpdateRules<CreateCategoryDto, Category>();
+
+        CreateMap<CreateCategoryCommand, Category>()
+            .IncludeBase<CreateCategoryDto, Category>();
 
         CreateMap<UpdateCategoryDto, Category>()
             .ForNullableBool(d => d.IsActive)

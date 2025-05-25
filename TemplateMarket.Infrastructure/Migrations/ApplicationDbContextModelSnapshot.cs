@@ -77,20 +77,21 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("ParentCategoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("PlatformId")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("PlatformId2")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
 
                     b.HasIndex("PlatformId2");
 
@@ -1328,9 +1329,15 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Category", b =>
                 {
+                    b.HasOne("TemplateMarket.Domain.Entities.Category", "ParentCategory")
+                        .WithMany()
+                        .HasForeignKey("ParentCategoryId");
+
                     b.HasOne("TemplateMarket.Domain.Entities.Platform", "Platform")
                         .WithMany()
                         .HasForeignKey("PlatformId2");
+
+                    b.Navigation("ParentCategory");
 
                     b.Navigation("Platform");
                 });
