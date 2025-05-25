@@ -3,7 +3,7 @@ using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Domain.Enums;
-using TemplateMarket.Domain.Events.OrderItem;
+using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.OrderItems.EventHandlers;
 

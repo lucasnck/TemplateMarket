@@ -34,6 +34,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> User { get; set; }
     public DbSet<Entity> Entities { get; set; }
     public DbSet<Company> Companies { get; set; }
+    public DbSet<UserCompany> UserCompanies { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductCategory> ProductCategories { get; set; }   
     public DbSet<ServiceDetail> ServiceDetails { get; set; }

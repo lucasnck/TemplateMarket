@@ -37,7 +37,7 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasIndex("GroupsId");
 
-                    b.ToTable("GroupGroupTemplate");
+                    b.ToTable("GroupTemplateGroups", (string)null);
                 });
 
             modelBuilder.Entity("ProcessorProcessorStep", b =>
@@ -981,13 +981,11 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("CompanyId1");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserCompanies");
                 });
@@ -1655,9 +1653,9 @@ namespace TemplateMarket.Infrastructure.Migrations
             modelBuilder.Entity("TemplateMarket.Domain.Entities.UserCompany", b =>
                 {
                     b.HasOne("TemplateMarket.Domain.Entities.Company", "Company")
-                        .WithOne()
-                        .HasForeignKey("TemplateMarket.Domain.Entities.UserCompany", "CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("TemplateMarket.Domain.Entities.Company", null)
@@ -1665,9 +1663,9 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .HasForeignKey("CompanyId1");
 
                     b.HasOne("TemplateMarket.Domain.Entities.User", "User")
-                        .WithOne()
-                        .HasForeignKey("TemplateMarket.Domain.Entities.UserCompany", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Company");

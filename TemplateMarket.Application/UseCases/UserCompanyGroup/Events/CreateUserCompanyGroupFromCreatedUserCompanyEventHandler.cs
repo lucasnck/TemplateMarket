@@ -1,27 +1,28 @@
 ﻿using MediatR;
+using System.Collections.Immutable;
 using TemplateMarket.Application.Common.Extensions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Domain.Entities;
-using TemplateMarket.Domain.Events.OrderItem;
+using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.UseCases.UserCompanies.EventHandlers;
 
 public class CreateUserCompanyGroupFromCreatedUserCompanyEventHandler(
     IRepository _repo,
     IGroupTemplateService _groupTemplateService
-) : INotificationHandler<UserCompanyOwnerCreatedDomainEvent>
+) : INotificationHandler<UserCompanyCreatedDomainEvent>
 {
-    public async Task Handle(UserCompanyOwnerCreatedDomainEvent notification, CancellationToken cancellationToken)
+    private List<string> TemplateKeys = new List<string>() { "base:user-company" };
+
+    public async Task Handle(UserCompanyCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var userCompany = (await _repo.SingleOrThrow<UserCompany>(uc => uc.Id == notification.Id));
+        var userCompany = (await _repo.SingleOrThrow<UserCompany>(uc => uc.Id == notification.UserCompany.Id));
 
-        if (userCompany.Company.Owner.Id != userCompany.User.Id)
-            return;
+        if (userCompany.Company.Owner.Id == userCompany.User.Id)
+            TemplateKeys.Add("owner:user-company");
 
-        var templateKey = "UserComapnyGroupOwner";
-
-        var groupIds = _groupTemplateService.GetGroupIdsForTemplateAsync(templateKey);
+        var groupIds = _groupTemplateService.GetGroupIdsForTemplates(TemplateKeys);
 
         foreach (var groupId in groupIds)
         {
@@ -33,7 +34,5 @@ public class CreateUserCompanyGroupFromCreatedUserCompanyEventHandler(
 
             await _repo.AddAsync(userCompanyGroup);
         }
-
-        await _repo.SaveChangesAsync();
     }
 }

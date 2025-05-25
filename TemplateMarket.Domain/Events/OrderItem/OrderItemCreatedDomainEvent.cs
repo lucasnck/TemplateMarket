@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace TemplateMarket.Domain.Events.OrderItem;
+namespace TemplateMarket.Domain.Events;
 
 public class OrderItemCreatedDomainEvent(long Id) : INotification
 {

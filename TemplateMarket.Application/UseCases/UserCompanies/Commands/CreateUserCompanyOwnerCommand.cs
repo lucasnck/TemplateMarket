@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using TemplateMarket.Application.Common.Exceptions;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Application.UseCases.UserCompanies.Dtos;
 using TemplateMarket.Domain.Entities;
-using TemplateMarket.Domain.Events.OrderItem;
+using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.UseCases.UserCompanies.Commands;
 
@@ -31,20 +30,17 @@ public class CreateUserCompanyCommandHandler(
         var company = ResolveCompany(request, entity, user);
         var userCompany = ResolveUserCompany(company, user);
 
-        userCompany.AddDomainEvent(new UserCompanyOwnerCreatedDomainEvent(userCompany));
-
+        userCompany.AddDomainEvent(new UserCompanyCreatedDomainEvent(userCompany));
 
         await _repo.SaveChangesAsync();
 
-
-        return entity.Id;
+        return userCompany.Id;
     }
 
     private UserCompany ResolveUserCompany(Company company, User user)
     {
         var userCompany = new UserCompany()
         {
-            IsActive = true,
             Company = company,
             User = user
         };
@@ -63,8 +59,9 @@ public class CreateUserCompanyCommandHandler(
             Phone = request.Phone,
             Entity = entity
         };
-
         _repo.AddAsync(company);
+
+        company.AddDomainEvent(new CompanyCreatedDomainEvent(company));
 
         return company;
     }

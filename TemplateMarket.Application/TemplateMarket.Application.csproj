@@ -38,6 +38,7 @@
     <Folder Include="UseCases\UserCompanies\Events\" />
     <Folder Include="UseCases\UserCompanies\Validators\" />
     <Folder Include="UseCases\UserCompanies\Queries\" />
+    <Folder Include="UseCases\Users\Events\" />
   </ItemGroup>
 
 </Project>

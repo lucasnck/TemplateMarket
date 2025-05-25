@@ -9,10 +9,5 @@ public class GroupTemplateMappingProfile : Profile
 {
     public GroupTemplateMappingProfile()
     {
-        CreateMap<CreateGrouptemplateCommandDto, GroupTemplate>()
-            .ApplyBaseUpdateRules<CreateGrouptemplateCommandDto, GroupTemplate>();
-
-        CreateMap<CreateGrouptemplateCommandDto, GroupTemplate>()
-            .IncludeBase<CreateGrouptemplateCommandDto, GroupTemplate>();
     }
 }

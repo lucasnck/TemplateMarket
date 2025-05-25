@@ -6,7 +6,6 @@ using TemplateMarket.Application.UseCases.Orders.Dtos;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Domain.Enums;
 using TemplateMarket.Domain.Events;
-using TemplateMarket.Domain.Events.OrderItem;
 
 namespace TemplateMarket.Application.UseCases.Orders.Commands.CreateOrder;
 

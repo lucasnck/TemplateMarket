@@ -21,7 +21,8 @@ public class ActiveProfileService(
     {
         var user = await GetUser();
 
-        var userCompanies = _repo.Query<UserCompany>().AsEnumerable();
+        var userCompanies = _repo.Query<UserCompany>()
+            .ToList();
 
         var userCompany = userCompanies?
             .FirstOrDefault(x => x.UserId == UserId && x.IsActive);
@@ -70,7 +71,7 @@ public class ActiveProfileService(
         }
 
         profiles.AddRange(userCompanies
-            .Where(uc => uc.Id == UserId)
+            .Where(uc => uc.UserId == UserId)
             .Select(uc => new ProfileResponse(
                 uc.Company.Entity.Name,
                 uc.Company.Entity.Identification,
@@ -87,7 +88,12 @@ public class ActiveProfileService(
 
     public void SetActiveProfile(string? companyIdentification)
     {
-        var userCompanies = _repo.Query<UserCompany>().Where(x => x.UserId == UserId);
+        var userCompanies = _repo.Query<UserCompany>()
+            .Where(x => x.UserId == UserId)
+            .ToList();
+
+        if(!userCompanies.Any(uc => uc.Company.Entity.Identification == companyIdentification))
+            throw new NotFoundException(nameof(UserCompany)); 
 
         foreach (var uc in userCompanies)
         {
