@@ -7,8 +7,7 @@ using TemplateMarket.Domain.Roles;
 
 namespace TemplateMarket.API.Controllers.Admin;
 
-
-[Route("api/admin/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class UserGroupsController(IMediator _mediator) : ControllerBase
 {

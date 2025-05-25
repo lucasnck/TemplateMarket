@@ -50,6 +50,8 @@ builder.Services.AddSwaggerGen(options =>
     {
         { jwtSecurityScheme, Array.Empty<string>() }
     });
+
+    options.OperationFilter<AddCompanyHeaderOperationFilter>();
 });
 
 builder.Services.AddCors(options =>
@@ -154,7 +156,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ActiveProfileValidationMiddleware>();
-
 
 app.MapControllers();
 

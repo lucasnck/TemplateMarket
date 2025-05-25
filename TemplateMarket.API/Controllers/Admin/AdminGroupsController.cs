@@ -5,9 +5,9 @@ using TemplateMarket.Application.UseCases.Groups.Commands;
 
 namespace TemplateMarket.API.Controllers.Admin;
 
-[Route("api/admin/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
-public class GroupsController(IMediator _mediator) : ControllerBase
+public class AdminGroupsController(IMediator _mediator) : ControllerBase
 {
     [Authorize]
     //[RoleFilter(Roles.Group.Update)]

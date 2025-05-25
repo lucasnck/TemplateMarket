@@ -1,22 +1,18 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TemplateMarket.Application.UseCases.Platforms.Commands;
 using TemplateMarket.Application.UseCases.Platforms.Queries;
 using TemplateMarket.Application.UseCases.Templates.Commands;
 
-namespace TemplateMarket.API.Controllers;
+namespace TemplateMarket.API.Controllers.Admin;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PlatformsController : ControllerBase
+public class AdminPlatformsController(IMediator _mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public PlatformsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
+    [Authorize]
+    //[RoleFilter(Roles.Platform.Update)]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePlatformCommand command)
     {
@@ -24,6 +20,8 @@ public class PlatformsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    //[RoleFilter(Roles.Platform.Read)]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -31,6 +29,8 @@ public class PlatformsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    //[RoleFilter(Roles.Platform.Read)]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(long id)
     {
@@ -38,6 +38,8 @@ public class PlatformsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    //[RoleFilter(Roles.Platform.Update)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(long id)
     {
@@ -45,6 +47,8 @@ public class PlatformsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    //[RoleFilter(Roles.Platform.Update)]
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdatePlatformCommand command)
     {
