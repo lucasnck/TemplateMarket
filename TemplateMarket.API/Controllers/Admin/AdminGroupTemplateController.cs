@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TemplateMarket.API.Common;
 using TemplateMarket.Application.UseCases.GroupTemplates.Commands;
 
 namespace TemplateMarket.API.Controllers.Admin;
 
 [Route("api/[controller]")]
-[ApiController]
-public class AdminGroupTemplateController(IMediator _mediator) : ControllerBase
+public class AdminGroupTemplateController(IMediator _mediator) : ApiControllerBase(_mediator)
 {
     [Authorize]
     //[RoleFilter(Roles.GroupTemplate.Update)]

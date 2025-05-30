@@ -19,10 +19,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.IsActive)
             .IsRequired();
 
-        builder.Property(x => x.ProductType)
-            .HasConversion<string>()
-            .IsRequired();
-
         builder.HasOne(x => x.Partner)
             .WithMany()
             .HasForeignKey(x => x.PartnerId)

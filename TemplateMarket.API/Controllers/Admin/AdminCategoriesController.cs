@@ -1,14 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TemplateMarket.API.Common;
 using TemplateMarket.Application.UseCases.Categories.Commands;
 using TemplateMarket.Application.UseCases.Templates.Queries;
 
 namespace TemplateMarket.API.Controllers.Admin;
 
 [Route("api/[controller]")]
-[ApiController]
-public class AdminCategoriesController(IMediator _mediator) : ControllerBase
+public class AdminCategoriesController(IMediator _mediator) : ApiControllerBase(_mediator)
 {
     [Authorize]
     //[RoleFilter(Roles.Category.Update)]

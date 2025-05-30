@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TemplateMarket.API.Common;
 using TemplateMarket.Application.UseCases.Showcases.Queries;
 
 namespace TemplateMarket.API.Controllers;
 
 [Route("api/showcases")]
-[ApiController]
-public class ShowcasesController(IMediator _mediator) : ControllerBase
+public class ShowcasesController(IMediator _mediator) : ApiControllerBase(_mediator)
 {
     [HttpGet("{id}")]
     public async Task<IActionResult> GetShowcase(long id)

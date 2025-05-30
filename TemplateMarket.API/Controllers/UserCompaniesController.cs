@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TemplateMarket.API.Common;
 using TemplateMarket.Application.UseCases.UserCompanies.Commands;
 
 namespace TemplateMarket.API.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
-public class UserCompaniesController(IMediator _mediator) : ControllerBase
+public class UserCompaniesController(IMediator _mediator) : ApiControllerBase(_mediator)
 {
     [Authorize]
     //[RoleFilter(Roles.UserCompany.Update)]

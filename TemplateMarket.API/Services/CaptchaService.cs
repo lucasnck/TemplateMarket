@@ -1,16 +1,10 @@
 ﻿using System.Text.Json;
 
-public class CaptchaService
+public class CaptchaService(
+    HttpClient _http, 
+    IConfiguration _config
+)
 {
-    private readonly HttpClient _http;
-    private readonly IConfiguration _config;
-
-    public CaptchaService(HttpClient http, IConfiguration config)
-    {
-        _http = http;
-        _config = config;
-    }
-
     public async Task<bool> ValidateTokenAsync(string token)
     {
         var secret = _config["Recaptcha:Secret"];

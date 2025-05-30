@@ -64,7 +64,7 @@ public class CreateOrderCommandHandler(
         // Publicar eventos de domínio
         foreach (var orderItem in order.OrderItems)
         {
-            if (orderItem.Product.ProductType == ProductType.Service)
+            if (orderItem.Product.ProductCategories.Any(pc => pc.Category.Type == CategoryType.Service))
                 await _mediator.Publish(new OrderItemCreatedDomainEvent(orderItem.Id), ct);
 
             foreach (var service in orderItem.OrderItemServices)

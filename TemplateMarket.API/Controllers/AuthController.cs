@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using TemplateMarket.API.Common;
 using TemplateMarket.Application.UseCases.Auth.Commands;
 using TemplateMarket.Application.UseCases.Auth.Commands.ChangePassword;
 using TemplateMarket.Application.UseCases.Auth.Commands.ForgotPassword;
@@ -11,8 +12,7 @@ using TemplateMarket.Application.UseCases.Auth.Queries;
 using TemplateMarket.Application.UseCases.Auth.Queries.GetSelf;
 
 [Route("api/[controller]")]
-[ApiController]
-public class AuthController(IMediator _mediator) : ControllerBase
+public class AuthController(IMediator _mediator) : ApiControllerBase(_mediator)
 {
     [HttpPost("register")]
     [AllowAnonymous]

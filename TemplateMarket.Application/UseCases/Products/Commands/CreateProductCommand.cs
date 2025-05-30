@@ -26,7 +26,7 @@ public class CreateProductCommandHandler(
 
         await _repo.AddAsync(entity);
         await _repo.SaveChangesAsync();
-
+        
         return entity.Id;
     }
 }

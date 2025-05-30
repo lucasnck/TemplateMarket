@@ -23,7 +23,5 @@ public class ShowcaseConfiguration : IEntityTypeConfiguration<Showcase>
         builder.HasMany(x => x.ShowcaseProducts)
             .WithOne()
             .HasForeignKey(x => x.ShowcaseId);
-            
-            
     }
 }

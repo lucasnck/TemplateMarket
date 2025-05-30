@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TemplateMarket.API.Common;
 using TemplateMarket.Application.UseCases.Platforms.Commands;
 using TemplateMarket.Application.UseCases.Platforms.Queries;
 using TemplateMarket.Application.UseCases.Templates.Commands;
@@ -8,8 +9,7 @@ using TemplateMarket.Application.UseCases.Templates.Commands;
 namespace TemplateMarket.API.Controllers.Admin;
 
 [Route("api/[controller]")]
-[ApiController]
-public class AdminPlatformsController(IMediator _mediator) : ControllerBase
+public class AdminPlatformsController(IMediator _mediator) : ApiControllerBase(_mediator)
 {
     [Authorize]
     //[RoleFilter(Roles.Platform.Update)]

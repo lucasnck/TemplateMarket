@@ -55,6 +55,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<WorkflowItemProcessor> WorkflowItemProcessor { get; set; }
     public DbSet<WorkflowItemProcessorStep> WorkflowItemProcessorStep { get; set; }
 
+    public DbSet<Price> Prices { get; set; }
+    public DbSet<Domain.Entities.File> Files { get; set; }
+
+    public DbSet<Stock> Stocks { get; set; }
+    public DbSet<StockLocation> StockLocations { get; set; }
+    public DbSet<StockUnit> StockUnits { get; set; }
+
 
     // Adicione mais DbSets conforme você for criando mais entidades no futuro
     // public DbSet<OutraEntidade> OutraEntidade { get; set; }

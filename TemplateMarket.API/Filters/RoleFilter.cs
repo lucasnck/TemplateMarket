@@ -7,7 +7,6 @@ public class RoleFilter(IActiveProfileService profileService) : IAsyncActionFilt
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-
         if (!context.ActionDescriptor.EndpointMetadata
             .OfType<RoleFilterAttribute>()
             .Select(a => a.Role).Any())

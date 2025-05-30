@@ -6,5 +6,6 @@
         public string Description { get; set; } = default!;
         public string Type { get; set; } = default!;
         public bool IsActive { get; set; } = true;
+        public long? ParentCategoryId { get; set; }
     }
 }

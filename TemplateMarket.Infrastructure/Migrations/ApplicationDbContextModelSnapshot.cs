@@ -80,11 +80,8 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<long?>("ParentCategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("PlatformId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("PlatformId2")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -92,8 +89,6 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ParentCategoryId");
-
-                    b.HasIndex("PlatformId2");
 
                     b.ToTable("Categories");
                 });
@@ -270,6 +265,41 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.ToTable("Entities");
                 });
 
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.File", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Files");
+                });
+
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Group", b =>
                 {
                     b.Property<long>("Id")
@@ -298,7 +328,7 @@ namespace TemplateMarket.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.GroupRole", b =>
@@ -544,6 +574,39 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.ToTable("Platforms");
                 });
 
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Price", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PriceType")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Prices");
+                });
+
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Processor", b =>
                 {
                     b.Property<long>("Id")
@@ -683,16 +746,9 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Property<long?>("PartnerId1")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("ProductType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("SKU")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("StockQuantity")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -865,6 +921,124 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.HasIndex("ShowcaseId");
 
                     b.ToTable("ShowcaseProduct");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Stock", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Available")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProductId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuantityReserved")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("StockLocationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("StockLocationId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
+
+                    b.HasIndex("StockLocationId")
+                        .IsUnique();
+
+                    b.HasIndex("StockLocationId1");
+
+                    b.ToTable("Stocks");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.StockLocation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockLocations");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.StockUnit", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("OrderItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Reference")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("StockId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StocktId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("StockId");
+
+                    b.HasIndex("StocktId");
+
+                    b.ToTable("StockUnits");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplateDetail", b =>
@@ -1333,13 +1507,7 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ParentCategoryId");
 
-                    b.HasOne("TemplateMarket.Domain.Entities.Platform", "Platform")
-                        .WithMany()
-                        .HasForeignKey("PlatformId2");
-
                     b.Navigation("ParentCategory");
-
-                    b.Navigation("Platform");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Commission", b =>
@@ -1413,6 +1581,13 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Navigation("Entity");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.File", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", null)
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Group", b =>
@@ -1517,6 +1692,13 @@ namespace TemplateMarket.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Price", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", null)
+                        .WithMany("Prices")
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.ProcessorOutput", b =>
@@ -1633,6 +1815,56 @@ namespace TemplateMarket.Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Showcase");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Stock", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Product", null)
+                        .WithMany("Stocks")
+                        .HasForeignKey("ProductId1");
+
+                    b.HasOne("TemplateMarket.Domain.Entities.StockLocation", "StockLocation")
+                        .WithOne()
+                        .HasForeignKey("TemplateMarket.Domain.Entities.Stock", "StockLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.StockLocation", null)
+                        .WithMany("Stocks")
+                        .HasForeignKey("StockLocationId1");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("StockLocation");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.StockUnit", b =>
+                {
+                    b.HasOne("TemplateMarket.Domain.Entities.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Stock", null)
+                        .WithMany("StockUnits")
+                        .HasForeignKey("StockId");
+
+                    b.HasOne("TemplateMarket.Domain.Entities.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StocktId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+
+                    b.Navigation("Stock");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.TemplateDetail", b =>
@@ -1893,7 +2125,13 @@ namespace TemplateMarket.Infrastructure.Migrations
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Product", b =>
                 {
+                    b.Navigation("Images");
+
+                    b.Navigation("Prices");
+
                     b.Navigation("ProductCategories");
+
+                    b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Role", b =>
@@ -1904,6 +2142,16 @@ namespace TemplateMarket.Infrastructure.Migrations
             modelBuilder.Entity("TemplateMarket.Domain.Entities.Showcase", b =>
                 {
                     b.Navigation("ShowcaseProducts");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.Stock", b =>
+                {
+                    b.Navigation("StockUnits");
+                });
+
+            modelBuilder.Entity("TemplateMarket.Domain.Entities.StockLocation", b =>
+                {
+                    b.Navigation("Stocks");
                 });
 
             modelBuilder.Entity("TemplateMarket.Domain.Entities.User", b =>

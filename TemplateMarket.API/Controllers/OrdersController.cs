@@ -1,15 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TemplateMarket.API.Attributes;
+using TemplateMarket.API.Common;
 using TemplateMarket.Application.UseCases.Orders.Commands.CreateOrder;
-using TemplateMarket.Domain.Roles;
 
 namespace TemplateMarket.API.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
-public class OrdersController(IMediator _mediator) : ControllerBase
+public class OrdersController(IMediator _mediator) : ApiControllerBase(_mediator)
 { 
     [Authorize]
     //[RoleFilter(Roles.Orders.Create)]
