@@ -18,42 +18,42 @@ public class AuthController(IMediator _mediator) : ApiControllerBase(_mediator)
     [AllowAnonymous]
     [EnableRateLimiting("PublicEndpoints")]
     [EnableCors("AllowFrontend")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
+    public async Task<IActionResult> Register(RegisterUserCommand command)
         => Ok(await _mediator.Send(command));
 
     [HttpPost("verify-email")]
     [AllowAnonymous]
     [EnableRateLimiting("PublicEndpoints")]
     [EnableCors("AllowFrontend")]
-    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailCommand command)
+    public async Task<IActionResult> VerifyEmail(VerifyEmailCommand command)
         => Ok(await _mediator.Send(command));
 
     [Authorize]
     [HttpPost("resend-email-verification")]
-    public async Task<IActionResult> ResendEmailVerification([FromBody] ResendEmailVerificationCommand command)
+    public async Task<IActionResult> ResendEmailVerification(ResendEmailVerificationCommand command)
         => Ok(await _mediator.Send(command));
 
     [HttpPost("login")]
     [AllowAnonymous]
     [EnableRateLimiting("PublicEndpoints")]
-    public async Task<IActionResult> Login([FromBody] LoginCommand command)
+    public async Task<IActionResult> Login(LoginCommand command)
         => Ok(await _mediator.Send(command));
 
     [HttpPost("forgot-password")]
     [AllowAnonymous]
     [EnableRateLimiting("PublicEndpoints")]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand command) 
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command) 
         => Ok(await _mediator.Send(command));
 
     [HttpPost("reset-password")]
     [AllowAnonymous]
     [EnableRateLimiting("PublicEndpoints")]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+    public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
         => Ok(await _mediator.Send(command));
 
     [Authorize]
     [HttpPut("change-password")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+    public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)
         => Ok(await _mediator.Send(command));
 
     [Authorize]
@@ -68,6 +68,6 @@ public class AuthController(IMediator _mediator) : ApiControllerBase(_mediator)
 
     [Authorize]
     [HttpPut("self/profiles/switch")]
-    public async Task<IActionResult> PutSelfProfilesSwitch([FromBody] SelfProfileSwitchCommand command)
+    public async Task<IActionResult> PutSelfProfilesSwitch(SelfProfileSwitchCommand command)
         => Ok(await _mediator.Send(command));
 }

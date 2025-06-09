@@ -5,7 +5,7 @@ namespace TemplateMarket.Application.Common.Interfaces.Permissions;
 
 public interface IActiveProfileService
 {
-    long UserId { get; }
+    long? TryGetUserId();
 
     Task<User> GetUser();
 

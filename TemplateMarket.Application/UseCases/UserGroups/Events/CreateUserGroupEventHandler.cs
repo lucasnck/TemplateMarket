@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using Microsoft.Extensions.Logging;
 using System.Collections.Immutable;
 using TemplateMarket.Application.Common.Extensions;
+using TemplateMarket.Application.Common.Integration;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Domain.Entities;
@@ -8,16 +9,19 @@ using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.UseCases.UserGroups.Events;
 
-public class CreateUserGroupFromCreatedUserEventHandler(
+public class CreateUserGroupEventHandler(
     IRepository _repo,
-    IGroupTemplateService _groupTemplateService
-) : INotificationHandler<UserCreatedDomainEvent>
+    IGroupTemplateService _groupTemplateService,
+    ILogger<UserCreateConfirmationTokenEventHandler> _logger
+) : IDomainEventHandler<UserCreatedDomainEvent>
 {
     private IImmutableList<string> templateKeys = ImmutableList.Create("base:user", "base:user-customer");
 
-    public async Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
+    public async Task HandleAsync(UserCreatedDomainEvent @event)
     {
-        var user = await _repo.SingleOrThrow<User>(x => x.Id == notification.User.Id);
+        _logger.LogInformation($"Criando grupo de usuário para o UserId:{@event.UserId}");
+
+        var user = await _repo.SingleOrThrow<User>(x => x.Id == @event.UserId);
 
         var groupIds = _groupTemplateService.GetGroupIdsForTemplates(templateKeys);
 

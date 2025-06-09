@@ -11,7 +11,7 @@ public class ActiveProfileValidationMiddleware(
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var userId = _activeProfile.UserId;
+        var userId = _activeProfile.TryGetUserId();
 
         // Ignora requisições públicas ou sem autenticação
         if (!context.User.Identity?.IsAuthenticated ?? true)

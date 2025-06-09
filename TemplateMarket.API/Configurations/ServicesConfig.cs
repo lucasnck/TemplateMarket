@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 using TemplateMarket.Application.Common.Behaviors;
+using TemplateMarket.Application.Common.Integration;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Application.Common.Services;
@@ -29,11 +32,20 @@ public static class ServicesConfig
         services.AddScoped<IGroupTemplateService, GroupTemplateService>();
         services.AddScoped<ICacheService, CacheService>();
 
+        services.Configure<SieveOptions>(configuration.GetSection("Sieve"));
+        services.AddScoped<ISieveProcessor, SieveProcessor>();
+
         services.AddMediatR(typeof(CreateProductCommandHandler).Assembly);
         services.AddAutoMapper(typeof(ProductMappingProfile).Assembly);
         services.AddValidatorsFromAssembly(typeof(CreateProductCommandValidator).Assembly);
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthCommandEnricherBehavior<,>));
+
+        services.AddSingleton<IIntegrationEventPublisher, InMemoryIntegrationEventPublisher>();
+        services.AddHostedService<IntegrationEventBackgroundWorker>();
+
+        services.AddIntegrationEventHandlers(typeof(UserCreateConfirmationTokenEventHandler).Assembly);
+
 
         services.AddHttpContextAccessor();
         services.AddHttpClient();

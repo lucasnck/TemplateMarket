@@ -15,7 +15,14 @@ public class ActiveProfileService(
     IRepository _repo
 ) : IActiveProfileService
 {
-    public long UserId => long.Parse(_httpContext.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+    public long? TryGetUserId()
+    {
+        var userIdClaim = _httpContext.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (long.TryParse(userIdClaim, out var id))
+            return id;
+
+        return null;
+    }
 
     public async Task<AvailableProfileResponse> GetCurrentProfile()
     {
@@ -25,7 +32,7 @@ public class ActiveProfileService(
             .ToList();
 
         var userCompany = userCompanies?
-            .FirstOrDefault(x => x.UserId == UserId && x.IsActive);
+            .FirstOrDefault(x => x.UserId == TryGetUserId() && x.IsActive);
 
         ActiveProfileResponse current = null;
 
@@ -71,7 +78,7 @@ public class ActiveProfileService(
         }
 
         profiles.AddRange(userCompanies
-            .Where(uc => uc.UserId == UserId)
+            .Where(uc => uc.UserId == TryGetUserId())
             .Select(uc => new ProfileResponse(
                 uc.Company.Entity.Name,
                 uc.Company.Entity.Identification,
@@ -83,13 +90,13 @@ public class ActiveProfileService(
     }
 
     public async Task<User> GetUser()
-        => await _repo.SingleOrThrow<User>(x => x.Id == UserId)
+        => await _repo.SingleOrThrow<User>(x => x.Id == TryGetUserId())
                    ?? throw new NotFoundException(nameof(User));
 
     public void SetActiveProfile(string? companyIdentification)
     {
         var userCompanies = _repo.Query<UserCompany>()
-            .Where(x => x.UserId == UserId)
+            .Where(x => x.UserId == TryGetUserId())
             .ToList();
 
         if(!userCompanies.Any(uc => uc.Company.Entity.Identification == companyIdentification))

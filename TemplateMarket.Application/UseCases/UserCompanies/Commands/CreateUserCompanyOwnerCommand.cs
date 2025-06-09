@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TemplateMarket.Application.Common.Exceptions;
+using TemplateMarket.Application.Common.Integration;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Application.Common.Interfaces.Permissions;
 using TemplateMarket.Application.UseCases.UserCompanies.Dtos;
@@ -14,7 +15,8 @@ public class CreateUserCompanyOwnerCommand : CreateUserCompanyOwnerDto, IRequest
 
 public class CreateUserCompanyCommandHandler(
     IRepository _repo,
-    IActiveProfileService _activeProfileService
+    IActiveProfileService _activeProfileService,
+    IIntegrationEventPublisher _integrationEventPublisher
 ) : IRequestHandler<CreateUserCompanyOwnerCommand, long>
 {
     public async Task<long> Handle(CreateUserCompanyOwnerCommand request, CancellationToken cancellationToken)
@@ -27,12 +29,15 @@ public class CreateUserCompanyCommandHandler(
 
         var user = await _activeProfileService.GetUser();
         var entity = ResolveEntity(request);
-        var company = ResolveCompany(request, entity, user);
+        var company = await ResolveCompany(request, entity, user);
         var userCompany = ResolveUserCompany(company, user);
 
-        userCompany.AddDomainEvent(new UserCompanyCreatedDomainEvent(userCompany));
-
         await _repo.SaveChangesAsync();
+
+        await _integrationEventPublisher
+            .PublishAsync(new UserCompanyCreatedDomainEvent(userCompany.Id));
+        await _integrationEventPublisher
+            .PublishAsync(new CompanyCreatedDomainEvent(company.Id));
 
         return userCompany.Id;
     }
@@ -50,7 +55,7 @@ public class CreateUserCompanyCommandHandler(
         return userCompany;
     }
 
-    private Company ResolveCompany(CreateUserCompanyOwnerCommand request, Entity entity, User user)
+    private async Task<Company> ResolveCompany(CreateUserCompanyOwnerCommand request, Entity entity, User user)
     {
         var company = new Company()
         {
@@ -59,9 +64,8 @@ public class CreateUserCompanyCommandHandler(
             Phone = request.Phone,
             Entity = entity
         };
-        _repo.AddAsync(company);
-
-        company.AddDomainEvent(new CompanyCreatedDomainEvent(company));
+        
+        await _repo.AddAsync(company);
 
         return company;
     }

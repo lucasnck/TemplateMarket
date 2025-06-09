@@ -1,6 +1,6 @@
-﻿using MediatR;
-using TemplateMarket.Domain.Entities;
+﻿namespace TemplateMarket.Domain.Events;
 
-namespace TemplateMarket.Domain.Events;
-
-public record CompanyCreatedDomainEvent(Company company) : INotification;
+public class CompanyCreatedDomainEvent(long id) : DomainEvent
+{
+    public long Id { get; } = id;
+}

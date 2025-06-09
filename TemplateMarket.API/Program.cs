@@ -1,4 +1,5 @@
 ﻿using TemplateMarket.API.Configurations;
+using TemplateMarket.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ app.UseHttpsRedirection();
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<ActiveProfileValidationMiddleware>();
 app.MapControllers();
 app.Run();

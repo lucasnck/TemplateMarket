@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using TemplateMarket.Application.Common.Extensions;
+using TemplateMarket.Application.Common.Integration;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Domain.Events;
@@ -7,12 +9,15 @@ using TemplateMarket.Domain.Events;
 namespace TemplateMarket.Application.UseCases.Customers.Events;
 
 public class CreateCustomerOnUserCreatedDomainEventHandler(
-    IRepository _repo
-) : INotificationHandler<UserCreatedDomainEvent>
+    IRepository _repo,
+    ILogger<UserCreateConfirmationTokenEventHandler> _logger
+) : IDomainEventHandler<UserCreatedDomainEvent>
 {
-    public async Task Handle(UserCreatedDomainEvent notification, CancellationToken ct)
+    public async Task HandleAsync(UserCreatedDomainEvent @event)
     {
-        var user = await _repo.SingleOrThrow<User>(x => x.Id == notification.User.Id);
+        _logger.LogInformation($"Criando o customer para o UserId:{@event.UserId}");
+
+        var user = await _repo.SingleOrThrow<User>(x => x.Id == @event.UserId);
 
         var customer = new Customer
         {

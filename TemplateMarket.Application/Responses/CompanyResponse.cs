@@ -3,5 +3,6 @@
 public record CompanyResponse(
     long Id,
     string Name,
-    EntityResponse Entity
+    string Identification,
+    string Type // "CPF" ou "CNPJ"
 );

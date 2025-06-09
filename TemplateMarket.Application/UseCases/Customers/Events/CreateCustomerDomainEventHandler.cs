@@ -1,18 +1,19 @@
 ﻿using MediatR;
 using TemplateMarket.Application.Common.Extensions;
+using TemplateMarket.Application.Common.Integration;
 using TemplateMarket.Application.Common.Interfaces;
 using TemplateMarket.Domain.Entities;
 using TemplateMarket.Domain.Events;
 
 namespace TemplateMarket.Application.UseCases.Customers;
 
-public class CreateCustomerOnUserCompanyCreatedDomainEventHandler(
+public class CreateCustomerDomainEventHandler(
     IRepository _repo
-) : INotificationHandler<CompanyCreatedDomainEvent>
+) : IDomainEventHandler<CompanyCreatedDomainEvent>
 {
-    public async Task Handle(CompanyCreatedDomainEvent notification, CancellationToken ct)
+    public async Task HandleAsync(CompanyCreatedDomainEvent @event)
     {
-        var company = await _repo.SingleOrThrow<Company>(x => x.Id == notification.company.Id);
+        var company = await _repo.SingleOrThrow<Company>(x => x.Id == @event.Id);
 
         var customer = new Customer
         {
