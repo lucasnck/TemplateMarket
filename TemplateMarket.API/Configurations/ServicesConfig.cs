@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Sieve.Models;
-using Sieve.Services;
 using TemplateMarket.Application.Common.Behaviors;
 using TemplateMarket.Application.Common.Integration;
 using TemplateMarket.Application.Common.Interfaces;
@@ -31,9 +29,6 @@ public static class ServicesConfig
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
         services.AddScoped<IGroupTemplateService, GroupTemplateService>();
         services.AddScoped<ICacheService, CacheService>();
-
-        services.Configure<SieveOptions>(configuration.GetSection("Sieve"));
-        services.AddScoped<ISieveProcessor, SieveProcessor>();
 
         services.AddMediatR(typeof(CreateProductCommandHandler).Assembly);
         services.AddAutoMapper(typeof(ProductMappingProfile).Assembly);
